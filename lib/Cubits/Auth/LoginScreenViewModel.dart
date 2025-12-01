@@ -1,0 +1,70 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../Models/Requests/LoginRequest.dart';
+import '../../Models/Responses/LoginError.dart';
+import '../../Models/Responses/LoginResponse.dart';
+import '../../Repositories/LoginRepository.dart';
+import '../../Services/Local/SharedPreference.dart';
+import '../States/States.dart';
+
+class LoginScreenCubit extends Cubit<States> {
+  final LoginRepository repository;
+
+  LoginScreenCubit(this.repository) : super(InitialState());
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  bool isPasswordVisible = true;
+
+  Future<void> login() async {
+
+      emit(LoadingState(loadingMessage: "Loading..."));
+
+      final request = LoginRequest(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      Either<LoginError, LoginResponse> response =
+      await repository.login(request);
+
+      response.fold(
+            (error) {
+          emit(ErrorState(errorMessage: error.error!.message));
+        },
+            (data) async {
+
+          //تخزين التوكن
+          final token = data.data?.token;
+          await TokenStorage.saveToken(token!);
+          final savedToken = await TokenStorage.getToken();
+          print("Saved token locally: $savedToken");
+
+
+          //تخزين ال id
+          final userId = data.data?.id;
+          await TokenStorage.saveId(userId!);
+          final savedUserId = await TokenStorage.getUserId();
+          print("Saved id locally: $savedUserId");
+
+
+          emit(LoginSuccessState(response: data));
+        },
+      );
+
+  }
+
+  void clearForm() {
+    emailController.clear();
+    passwordController.clear();
+    isPasswordVisible = true;
+
+    emit(InitialState());
+  }
+}
+
+
+
+

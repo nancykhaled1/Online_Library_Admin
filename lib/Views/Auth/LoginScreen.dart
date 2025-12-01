@@ -1,0 +1,243 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:online_library_management/Views/Library/LibraryScreen.dart';
+import '../../Cubits/Auth/LoginScreenViewModel.dart';
+import '../../Cubits/States/States.dart';
+import '../../Utils/MyColors.dart';
+import '../../Utils/TextField.dart';
+import '../../Utils/dialog.dart';
+import '../Home/HomeScreen.dart';
+
+class LoginScreen extends StatefulWidget {
+  static const String routeName = 'login';
+
+   LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late LoginScreenCubit loginCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    loginCubit = context.read<LoginScreenCubit>();
+  }
+
+  // @override
+  // void dispose() {
+  //   loginCubit.clearForm();
+  //   super.dispose();
+  // }
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<LoginScreenCubit,States>(
+      listener: (context, state) async {
+        if (state is ErrorState) {
+          showOverlayMessage(context, state.errorMessage!, isError: true);
+
+        }
+        else if (state is LoginSuccessState) {
+          showOverlayMessage(context, state.response.data!.message!, isError: false);
+          context.read<LoginScreenCubit>().clearForm();
+
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) =>  LibraryScreen(),
+            ),
+          );
+
+        }
+      },
+      builder: (context, state) {
+        final viewModel = context.read<LoginScreenCubit>();
+        return WillPopScope(
+          onWillPop: () async {
+            // هنا بتتحكمى هل ترجعى ولا لا
+            return false; // ❌ مش هيرجع
+            // return true;  ✅ هيرجع
+          },
+          child: Scaffold(
+            backgroundColor: MyColors.whiteColor,
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding:  EdgeInsets.symmetric(horizontal: 24.w,vertical: 10.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🔹 Logo & App name
+                    Center(
+                      child: Image.asset(
+                        "assets/images/logo.png",
+                        width: 150.w,
+                        height: 150.h,
+                      ),
+                    ),
+
+                  //  SizedBox(height: 30.h),
+
+
+
+                    // 🔹 Welcome text
+                    Text(
+                      "Welcome back!",
+                      style: TextStyle(
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.w700,
+                          color: MyColors.blackColor
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      "You can log into your account first to read many interesting books!",
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: MyColors.greyColor
+                      ),
+                    ),
+
+                    SizedBox(height: 30.h),
+
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                          children: [
+                            CustomTextField(
+                              keyboardType: TextInputType.emailAddress,
+                              label: "Email",
+                              hintText: "youremail@mail.com",
+                              prefixIcon: Icons.email_outlined,
+                              controller: viewModel.emailController,
+                              validator: (text) {
+                                if (text!.isEmpty || text.trim().isEmpty) {
+                                  return 'enter your correct email';
+                                }
+                                bool emailValid = RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                                ).hasMatch(text);
+                                if (!emailValid) {
+                                  return 'enter your correct email';
+                                }
+                                return null;
+                              },
+
+                            ),
+                            SizedBox(height: 20.h),
+
+                            // 🔹 Password field
+                            CustomTextField(
+                              keyboardType: TextInputType.visiblePassword,
+                              label: "Password",
+                              hintText: "Input your password",
+                              prefixIcon: Icons.lock_outline,
+                              isobscure: viewModel.isPasswordVisible,
+                              controller: viewModel.passwordController,
+                              validator: (text) {
+                                if (text!.isEmpty || text.trim().isEmpty) {
+                                  return 'enter your password';
+                                }
+                                if (text.length < 6) {
+                                  return 'must be more than 6 number';
+                                }
+                                return null;
+                              },
+                              suffixIcon: Icon(
+                               viewModel.isPasswordVisible
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                size: 18.sp,
+                                color: MyColors.blackColor,
+                              ),
+                              suffixIconFunction: () {
+                                setState(() {
+                                  viewModel.isPasswordVisible = !viewModel.isPasswordVisible;
+                                });
+                              },
+                            ),
+
+                            SizedBox(height: 30.h),
+
+
+
+
+                            // 🔹 Login button
+                            ElevatedButton(
+                              onPressed: state is LoadingState
+                                  ? null
+                                  : () {
+                                if (_formKey.currentState!.validate()) {
+                                  viewModel.login();
+                                } else {
+                                  showOverlayMessage(context, "Please complete the form", isError: true);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: MyColors.primaryColor,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12.h,
+                                  horizontal: 16.w,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50.r),
+                                ),
+                              ),
+                              child:
+                              // state is LoadingState
+                              //     ? SizedBox(
+                              //   width: 20.w,
+                              //   height: 20.w,
+                              //   child: Row(
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       CircularProgressIndicator(
+                              //         strokeWidth: 2,
+                              //         valueColor:
+                              //         AlwaysStoppedAnimation<Color>(
+                              //           MyColors.whiteColor,
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // )
+                              //     :
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: MyColors.whiteColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            ),
+                          ]
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+      },
+
+    );
+
+
+
+
+  }
+}

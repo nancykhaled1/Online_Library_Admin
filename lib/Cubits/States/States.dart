@@ -1,0 +1,208 @@
+
+
+
+
+import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
+
+import '../../Models/Responses/AllCategoriesResponse.dart';
+import '../../Models/Responses/BookByIdResponse.dart';
+import '../../Models/Responses/BooksByCategoryIdResponse.dart';
+import '../../Models/Responses/CategoryByIdResponse.dart';
+import '../../Models/Responses/LoginResponse.dart';
+import '../../Models/Responses/ParentCategoryResponse.dart';
+
+abstract class States{}
+
+class InitialState extends States{}
+
+class LoadingState extends States{
+  String? loadingMessage;
+  LoadingState({required this.loadingMessage});
+}
+
+
+class BookLoadingState extends States{
+  String? loadingMessage;
+  BookLoadingState({required this.loadingMessage});
+}
+
+
+
+
+class ErrorState extends States{
+  String? errorMessage;
+  ErrorState({required this.errorMessage});
+}
+
+
+class ButtonErrorState extends States{
+  String? errorMessage;
+  ButtonErrorState({required this.errorMessage});
+}
+
+
+
+class LoginSuccessState extends States {
+  final LoginResponse response;
+
+  LoginSuccessState({required this.response});
+}
+
+class AddCategorySuccessState extends States {
+  final ParentCategory category;
+
+  AddCategorySuccessState({required this.category});
+}
+
+
+
+class HomeDataSuccessState extends States {
+  final List<Categories> categories;
+  final List<Parents> parents;
+  //final List<Books> books;
+
+  HomeDataSuccessState(this.categories,  this.parents);
+}
+
+class CategoryByIdSuccessState extends States {
+  final List<Children> children;
+
+  CategoryByIdSuccessState({required this.children});
+}
+
+class DeleteCategorySuccessState extends States {
+  final DeleteCategoryResponse response;
+
+  DeleteCategorySuccessState({required this.response});
+}
+
+class BookByCategoryIdSuccessState extends States {
+  final List<BooksByCategoryId> book;
+
+  BookByCategoryIdSuccessState({required this.book});
+}
+
+
+class BookDetailsSuccessState extends States {
+  final BookById book;
+
+  BookDetailsSuccessState({required this.book});
+}
+
+//
+// class CategoryByIdSuccessState extends States {
+//   final List<Children> children;
+//
+//   CategoryByIdSuccessState({required this.children});
+// }
+//
+// class ReviewSuccessState extends States {
+//   final ReviewResponse response;
+//
+//   ReviewSuccessState({required this.response});
+// }
+//
+// class GetReviewSuccessState extends States {
+//   final List<Reviews> review;
+//
+//   GetReviewSuccessState({required this.review});
+// }
+//
+//
+// class SaveBookSuccessState extends States {
+//   final SaveBookResponse response;
+//
+//   SaveBookSuccessState({required this.response});
+// }
+//
+//
+// class AllSaveBookSuccessState extends States {
+//   final List<Favorites> favorite;
+//
+//   AllSaveBookSuccessState({required this.favorite});
+// }
+//
+//
+// class RemoveSavedBookSuccessState extends States {
+//   final RemoveData removeData;
+//
+//   RemoveSavedBookSuccessState({required this.removeData});
+// }
+//
+// class SearchBooksSuccessState extends States {
+//   final List<SearchBooks> search;
+//
+//   SearchBooksSuccessState({required this.search});
+// }
+//
+// class BorrowBooksSuccessState extends States {
+//   final BorrowData borrowData;
+//
+//   BorrowBooksSuccessState({required this.borrowData});
+// }
+//
+// class GetBorrowBooksSuccessState extends States {
+//   final List<Borrowed> borrow;
+//   final List<Returned> returned;
+//
+//   GetBorrowBooksSuccessState({required this.borrow,required this.returned});
+// }
+//
+//
+//
+// class ReturnBooksSuccessState extends States {
+//   final ReturnData returnData;
+//
+//   ReturnBooksSuccessState({required this.returnData});
+// }
+//
+//
+// class ProfileSuccessState extends States {
+//   final ProfileUser user;
+//
+//   ProfileSuccessState({required this.user});
+// }
+//
+//
+// class UpdateProfileSuccessState extends States {
+//   final ProfileUser user;
+//
+//   UpdateProfileSuccessState({required this.user});
+// }
+//
+// class UploadImageSuccessState extends States {
+//   final String imageUrl;
+//   UploadImageSuccessState(this.imageUrl);
+// }
+//
+// class ChangeEditState extends States {}
+//
+// class DeleteProfileSuccessState extends States {
+//   final DeleteProfileResponse response;
+//   DeleteProfileSuccessState(this.response);
+// }
+//
+// class NotificationSuccessState extends States {
+//   final NotificationResponse response;
+//
+//   NotificationSuccessState({required this.response});
+// }
+//
+// class GetNotificationSuccessState extends States {
+//   final List<Notifications> notifications;
+//
+//   GetNotificationSuccessState({required this.notifications});
+// }
+//
+// class NotificationDetailsSuccessState extends States {
+//   final DataDetails notificationDetails;
+//
+//   NotificationDetailsSuccessState({required this.notificationDetails});
+// }
+//
+// class CounterSuccessState extends States {
+//   final CounterData counterData;
+//
+//   CounterSuccessState({required this.counterData});
+// }
+
