@@ -14,10 +14,10 @@ import 'EditBottomSheet.dart';
 
 class CategoryScreen extends StatefulWidget {
   static const routeName = 'category';
-  final String ParentId;
-  final String name;
+  final String? ParentId;
+  final String? name;
 
-  const CategoryScreen({super.key, required this.ParentId, required this.name});
+  const CategoryScreen({super.key, this.ParentId, this.name});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -27,7 +27,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CategoryCubit>().getCategoryById(widget.ParentId);
+    context.read<CategoryCubit>().getCategoryById(widget.ParentId??'');
   }
 
   @override
@@ -122,7 +122,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               onTap: (){
                                 Navigator.of(context).pushReplacement(
                                   PageRouteBuilder(
-                                    pageBuilder: (context, animation, secondaryAnimation) => BookScreen(name: item.name??'Category',),
+                                    pageBuilder: (context, animation, secondaryAnimation) => BookScreen(name: item.name??'Category',categoryId: item.id!,),
                                     transitionDuration: Duration.zero,
                                     reverseTransitionDuration: Duration.zero,
                                   ),
@@ -179,7 +179,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                           onPrimaryPressed: () async {
                                             Navigator.pop(context);
                                             cubit.deleteChildCategory(
-                                                item.id!, widget.ParentId);
+                                                item.id!, widget.ParentId ?? '');
                                           },
                                           secondaryButtonText: 'No, Cancel',
                                           onSecondaryPressed: () {

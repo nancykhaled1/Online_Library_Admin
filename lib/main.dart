@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
 import 'package:online_library_management/Cubits/Library/CategoryViewModel.dart';
 import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
@@ -13,6 +14,7 @@ import 'Utils/MyColors.dart';
 import 'Views/Auth/LoginScreen.dart';
 import 'Views/Home/HomeScreen.dart';
 import 'Views/Library/LibraryScreen.dart';
+import 'Views/Library/SubCategoriesScreen.dart';
 
 
 
@@ -64,6 +66,12 @@ Future<void> main() async {
             ),
           ),
 
+          BlocProvider(
+            create: (context) => BookCubit(
+              context.read<CategoryRepository>(),
+            ),
+          ),
+
 
         ],
         child: const MyApp(),
@@ -101,7 +109,7 @@ class MyApp extends StatelessWidget {
               routes: {
                  LoginScreen.routeName : (context) => LoginScreen(),
                 LibraryScreen.routeName : (context) => LibraryScreen(),
-                // HomeScreen.routeName : (context) => HomeScreen(),
+                CategoryScreen.routeName : (context) => CategoryScreen(),
                 // RegisterScreen.routeName : (context) => RegisterScreen(),
                 // LibraryHomeScreen.routeName : (context) => LibraryHomeScreen(),
                 // MyShelfScreen.routeName : (context) => MyShelfScreen()
