@@ -6,6 +6,16 @@ class ApiConstants{
 
   static const String getCategories= "/api/admin/categories";
 
+  static const String addBookApi = "/api/admin/books";
+
+
+
+
+
+
+
+
+
   static const String getBooksApi = "/api/user/books";
 
   static const String getBookByIdApi = "/api/user/notification";
@@ -18,7 +28,7 @@ class ApiConstants{
 
   static const String borrowApi = "/api/user/borrows";
 
-  static const String profileApi = "/api/user/profile";
+
 
   static const String fcmTokenApi = "/api/user/auth/local/fcm-token";
 

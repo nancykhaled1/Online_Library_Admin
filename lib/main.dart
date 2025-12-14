@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
 import 'package:online_library_management/Cubits/Library/CategoryViewModel.dart';
+import 'package:online_library_management/Repositories/BookRepository.dart';
 import 'package:online_library_management/Repositories/CategoryRepository.dart';
+import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
 import 'Cubits/Auth/LoginScreenViewModel.dart';
 import 'Repositories/LoginRepository.dart';
@@ -30,7 +32,8 @@ Future<void> main() async {
   final categoryRemoteDataSource = CategoryRemoteDataSource(apiManager);
   final categoryRepository = CategoryRepository(categoryRemoteDataSource);
 
-
+  final addBookRemoteDataSource = AddBookRemoteDataSource(apiManager);
+  final addBookRepository = AddBookRepository(addBookRemoteDataSource);
 
   runApp(
 
@@ -45,7 +48,9 @@ Future<void> main() async {
         RepositoryProvider<CategoryRepository>(
           create: (context) => categoryRepository,
         ),
-
+        RepositoryProvider<AddBookRepository>(
+          create: (context) => addBookRepository,
+        ),
 
 
 
@@ -69,6 +74,7 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => BookCubit(
               context.read<CategoryRepository>(),
+                context.read<AddBookRepository>()
             ),
           ),
 

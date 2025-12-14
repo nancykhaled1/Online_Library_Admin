@@ -4,6 +4,7 @@
 
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 
+import '../../Models/Responses/AddBookResponse.dart';
 import '../../Models/Responses/AllCategoriesResponse.dart';
 import '../../Models/Responses/BookByIdResponse.dart';
 import '../../Models/Responses/BooksByCategoryIdResponse.dart';
@@ -88,6 +89,25 @@ class BookDetailsSuccessState extends States {
 
   BookDetailsSuccessState({required this.book});
 }
+
+class AddBookSuccessState extends States {
+  final AddBookResponse book;
+
+  AddBookSuccessState({required this.book});
+}
+
+class MainImagePickedSuccessState extends States {
+  final String imageUrl;
+  MainImagePickedSuccessState(this.imageUrl);
+}
+class GalleryImagesPickedSuccessState extends States {
+  final List<String> imageUrl;
+  GalleryImagesPickedSuccessState(this.imageUrl);
+}
+
+class MainImageClearedState extends States {}
+class BookFormClearedState extends States {}
+
 
 //
 // class CategoryByIdSuccessState extends States {

@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   String? Function(String?) validator;
   bool isPassword;
   bool readonly;
+  int? maxLines = 1;
 
    CustomTextField({
     super.key,
@@ -30,6 +31,7 @@ class CustomTextField extends StatelessWidget {
      this.suffixIcon,
      this.suffixIconFunction,
      this.readonly = false,
+     this.maxLines,
 
    });
 
@@ -44,6 +46,7 @@ class CustomTextField extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         TextFormField(
+          maxLines: isobscure ? 1 : maxLines,
           readOnly: readonly,
           controller: controller,
           obscureText: isobscure,
@@ -52,7 +55,9 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 14.sp, color: MyColors.greyColor),
-            prefixIcon: Icon(prefixIcon, color: MyColors.blackColor),
+            prefixIcon: prefixIcon != null
+                ? Icon(prefixIcon, color: MyColors.blackColor)
+                : null,
             filled: true,
             fillColor: Colors.white,
             suffixIcon:

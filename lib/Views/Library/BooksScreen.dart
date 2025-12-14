@@ -8,6 +8,7 @@ import 'package:online_library_management/Views/Library/SubCategoriesScreen.dart
 
 import '../../Cubits/States/States.dart';
 import '../../Utils/CommenConfirmSheet.dart';
+import 'AddBookScreen.dart';
 import 'EditBottomSheet.dart';
 
 class BookScreen extends StatefulWidget{
@@ -187,18 +188,21 @@ class _BookScreenState extends State<BookScreen> {
             ],
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     editBottomSheet(context: context,
-        //         buttonText: 'Add',
-        //         onPressed: (){
-        //
-        //         }
-        //     );
-        //   },
-        //   backgroundColor: MyColors.primaryColor,
-        //   child: Icon(Icons.add,color: MyColors.whiteColor,size: 30.sp,),
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    AddNewBookScreen(categoryId: widget.categoryId),
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
+              ),
+            );
+            },
+          backgroundColor: MyColors.primaryColor,
+          child: Icon(Icons.add, color: MyColors.whiteColor, size: 30.sp),
+        ),
+
       )),
     );
   }

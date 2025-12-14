@@ -225,53 +225,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ],
           ),
         ),
-        floatingActionButton: BlocBuilder<CategoryCubit, States>(
-          builder: (context,state){
-            // if (state is LoadingState) {
-            //   return Center(child: CircularProgressIndicator());
-            // }
-            if (state is ButtonErrorState) {
-              final error = state.errorMessage;
-
-              if (error == "No Internet Connection") {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: SvgPicture.asset(
-                        "assets/images/noconnection.svg", // 🖼️ ضيفي صورة عندك
-                        width: 200,
-                        height: 200,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "No internet connection",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: MyColors.greyColor,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "Noto Kufi Arabic",
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Center(
-                  child: Text(
-                    "Please, Try again later",
-                    style: TextStyle(
-                      color: MyColors.greyColor,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                );
-              }
-
-            }
-            else {
-              return FloatingActionButton(
+        floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   editBottomSheet(context: context,
                     buttonText: 'Add',
@@ -289,13 +243,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 backgroundColor: MyColors.primaryColor,
                 child: Icon(
                   Icons.add, color: MyColors.whiteColor, size: 30.sp,),
-              );
-            }
+              ),
 
-          },
-
-        ),
-      )),
+    ))
     );
   }
 }
