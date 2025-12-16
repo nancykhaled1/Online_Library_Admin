@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
+import '../../Cubits/Library/CategoryViewModel.dart';
 import '../../Cubits/States/States.dart';
+import '../../Models/Responses/AllCategoriesResponse.dart';
+import '../../Models/Responses/CategoryByIdResponse.dart';
 import '../../Utils/MyColors.dart';
 import '../../Utils/TextField.dart';
 import '../../Utils/dialog.dart';
@@ -18,8 +21,6 @@ class AddNewBookScreen extends StatefulWidget {
 }
 
 class _AddNewBookScreenState extends State<AddNewBookScreen> {
-  int copies = 0;
-  int pages = 0;
 
 
 
@@ -46,7 +47,7 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
             onPressed: () {
               context.read<BookCubit>().clearForm();
 
-              Navigator.of(context).pushReplacementNamed(LibraryScreen.routeName);
+              Navigator.of(context).popAndPushNamed(LibraryScreen.routeName);
             },
             icon: Icon(Icons.arrow_back),
           ),
@@ -79,9 +80,9 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    // ----------------------------------------------------
-                    // معلومات الكتاب الأساسية
-                    // ----------------------------------------------------
+                    /// ----------------------------------------------------
+                    /// معلومات الكتاب الأساسية
+                    /// ----------------------------------------------------
                     sectionTitle("Main Book Information"),
 
                     CustomTextField(
@@ -117,6 +118,7 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                       label: "Synopsis",
                       hintText: "Input the synopsis",
                       controller: viewModel.synopsisController,
+                      maxLines: 4,
                       validator: (text) {
                         if (text!.isEmpty || text.trim().isEmpty) {
                           return 'must be filled';
@@ -125,46 +127,53 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                       },
 
                     ),
-
+                    SizedBox(height: 10.h),
+                    parentDropdown(),
+                    SizedBox(height: 10.h),
+                    categoryDropdown(),
                     SizedBox(height: 20.h),
 
-                    // ----------------------------------------------------
-                    // تفاصيل النشر والمؤلفين
-                    // ----------------------------------------------------
+                    /// ----------------------------------------------------
+                    /// تفاصيل النشر والمؤلفين
+                    /// ----------------------------------------------------
                     sectionTitle("Publishing Information"),
 
-                    CustomTextField(
-                      keyboardType: TextInputType.text,
-                      label: "copies",
-                      hintText: "Input the condition",
-                      controller: viewModel.copiesController,
-                      validator: (text) {
-                        if (text!.isEmpty || text.trim().isEmpty) {
-                          return 'enter the condition';
-                        }
-                        return null;
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            keyboardType: TextInputType.text,
+                            label: "copies",
+                            hintText: "Input the condition",
+                            controller: viewModel.copiesController,
+                            validator: (text) {
+                              if (text!.isEmpty || text.trim().isEmpty) {
+                                return 'enter the condition';
+                              }
+                              return null;
+                            },
 
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: CustomTextField(
+                            keyboardType: TextInputType.text,
+                            label: "Stock",
+                            hintText: "Input the condition",
+                            controller: viewModel.stockController,
+                            validator: (text) {
+                              if (text!.isEmpty || text.trim().isEmpty) {
+                                return 'enter the condition';
+                              }
+                              return null;
+                            },
+
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 10.h),
-
-
-                    CustomTextField(
-                      keyboardType: TextInputType.text,
-                      label: "Stock",
-                      hintText: "Input the condition",
-                      controller: viewModel.stockController,
-                      validator: (text) {
-                        if (text!.isEmpty || text.trim().isEmpty) {
-                          return 'enter the condition';
-                        }
-                        return null;
-                      },
-
-                    ),
-
-                    SizedBox(height: 10.h),
-
                     CustomTextField(
                       keyboardType: TextInputType.text,
                       label: "Publisher",
@@ -178,14 +187,12 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                       },
 
                     ),
-
                     SizedBox(height: 10.h),
-
                     Row(
                       children: [
                         Expanded(child: CustomTextField(
                           keyboardType: TextInputType.text,
-                          label: "publishYear",
+                          label: "Publish year",
                           hintText: "Input the year",
                           controller: viewModel.yearController,
                           validator: (text) {
@@ -213,12 +220,11 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                         ),),
                       ],
                     ),
-
                     SizedBox(height: 20.h),
 
-                    // ----------------------------------------------------
-                    // مواصفات إضافية
-                    // ----------------------------------------------------
+                    /// ----------------------------------------------------
+                    /// مواصفات إضافية
+                    /// ----------------------------------------------------
                     sectionTitle("More Information"),
                     CustomTextField(
                       keyboardType: TextInputType.text,
@@ -234,7 +240,6 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
 
                     ),
                     SizedBox(height: 10.h),
-
                     CustomTextField(
                       keyboardType: TextInputType.text,
                       label: "Condition",
@@ -249,7 +254,6 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
 
                     ),
                     SizedBox(height: 10.h),
-
                     Row(
                       children: [
                         Expanded(
@@ -272,7 +276,7 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                         Expanded(
                           child: CustomTextField(
                             keyboardType: TextInputType.text,
-                            label: "Weight",
+                            label: "Weight (gm)",
                             hintText: "Input the weight",
                             controller: viewModel.weightController,
                             validator: (text) {
@@ -287,36 +291,29 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                       ],
                     ),
 
-
-
-                    SizedBox(height: 10.h),
-
-
-                    // ----------------------------------------------------
-                    // الوسائط
-                    // ----------------------------------------------------
+                    /// ----------------------------------------------------
+                    /// الوسائط
+                    /// ----------------------------------------------------
                     sectionTitle("Images"),
-
                     Text(
                       "Main Image",
                       style: labelStyle(),
                     ),
-
                     SizedBox(height: 10.h),
                     mainImagePicker(),
-
                     SizedBox(height: 10.h),
-
                     Text("List of gallery", style: labelStyle()),
                     SizedBox(height: 10.h),
                     additionalImageBox(),
-
                     SizedBox(height: 40.h),
 
-                    // زر الحفظ
+                    /// زر الحفظ
                     ElevatedButton(
                       onPressed: (){
-                        context.read<BookCubit>().selectedCategoryId = widget.categoryId;
+                       // context.read<BookCubit>().selectedCategoryId = widget.categoryId;
+                        final selectedId = context.read<CategoryCubit>().selectedCategoryId;
+                        context.read<BookCubit>().selectedCategoryId = selectedId;
+
                         context.read<BookCubit>().addBook();
 
                       },
@@ -334,6 +331,23 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          state is LoadingState
+                              ? SizedBox(
+                            // width: 20.w,
+                            height: 20.w,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor:
+                                  AlwaysStoppedAnimation<Color>(
+                                    MyColors.whiteColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ):
                           Text(
                             "Add",
                             style: TextStyle(
@@ -383,39 +397,66 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
   }
 
 
-  Widget counterRow({
-    required int value,
-    required VoidCallback onPlus,
-    required VoidCallback onMinus,
-  }) {
-    return Row(
-      children: [
-        buildCounterButton(Icons.remove, onMinus),
-        SizedBox(width: 15.w),
-        Text(
-          "$value",
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(width: 15.w),
-        buildCounterButton(Icons.add, onPlus),
-      ],
-    );
-  }
+  Widget parentDropdown() {
+    final cubit = context.watch<CategoryCubit>();
 
-  Widget buildCounterButton(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: 35.w,
-        height: 35.h,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(8.r),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: MyColors.outColor),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<Parents>(
+          hint: Text("Select Main Category"),
+          value: cubit.selectedParent,
+          isExpanded: true,
+          items: cubit.parents.map((parent) {
+            return DropdownMenuItem(
+              value: parent,
+              child: Text(parent.name!),
+            );
+          }).toList(),
+          onChanged: (value) {
+            cubit.selectedParent = value;
+            cubit.selectedParentId = value!.id; // 👈 المهم
+            setState(() {}); // ✅ لتحديث الـ Dropdown
+          },
         ),
-        child: Icon(icon, size: 20.sp),
       ),
     );
   }
+
+  Widget categoryDropdown() {
+    final cubit = context.watch<CategoryCubit>();
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: MyColors.outColor),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<Children>(
+          hint: Text("Select Category"),
+          value: cubit.selectedCategory,
+          isExpanded: true,
+          items: cubit.children.map((cat) {
+            return DropdownMenuItem(
+              value: cat,
+              child: Text(cat.name!),
+            );
+          }).toList(),
+          onChanged: (value) {
+            cubit.selectedCategory = value;
+            cubit.selectedCategoryId = value!.id; // 👈 المهم
+            setState(() {}); // ✅ لتحديث الـ Dropdown
+          },
+        ),
+      ),
+    );
+  }
+
 
   Widget mainImagePicker() {
     final viewModel = context.watch<BookCubit>();
@@ -445,14 +486,14 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
                 ),
               ),
               Positioned(
-                top: 8,
-                right: 8,
+                top: 8.h,
+                right: 8.w,
                 child: GestureDetector(
                   onTap: () {
                     viewModel.clearMainImage();
                   },
                   child: Container(
-                    padding: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(4.r),
                     decoration: BoxDecoration(
                       color: MyColors.blackColor,
                       shape: BoxShape.circle,
@@ -549,9 +590,3 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
 
 
 
-
-///  الحياه 3ز0: الكون بشرا فى عصر الذكاء الاصطناعى
-///    ماكس تيجمارك
-///    مؤسسه الكويت للتقدم العلمى
-///    2019
-///

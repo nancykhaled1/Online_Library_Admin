@@ -9,6 +9,7 @@ import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
 import 'Cubits/Auth/LoginScreenViewModel.dart';
+import 'Cubits/Library/ReviewViewModel.dart';
 import 'Repositories/LoginRepository.dart';
 import 'Services/Remote/ApiManager.dart';
 import 'Sources/LoginDataSource.dart';
@@ -74,6 +75,12 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => BookCubit(
               context.read<CategoryRepository>(),
+                context.read<AddBookRepository>()
+            ),
+          ),
+
+          BlocProvider(
+            create: (context) => ReviewCubit(
                 context.read<AddBookRepository>()
             ),
           ),

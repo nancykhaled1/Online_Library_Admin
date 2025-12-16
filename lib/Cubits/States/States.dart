@@ -2,15 +2,18 @@
 
 
 
+import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 
 import '../../Models/Responses/AddBookResponse.dart';
 import '../../Models/Responses/AllCategoriesResponse.dart';
 import '../../Models/Responses/BookByIdResponse.dart';
+import '../../Models/Responses/BookReviewResponse.dart';
 import '../../Models/Responses/BooksByCategoryIdResponse.dart';
 import '../../Models/Responses/CategoryByIdResponse.dart';
 import '../../Models/Responses/LoginResponse.dart';
 import '../../Models/Responses/ParentCategoryResponse.dart';
+import '../../Models/Responses/UpdateBookResponse.dart';
 
 abstract class States{}
 
@@ -109,24 +112,24 @@ class MainImageClearedState extends States {}
 class BookFormClearedState extends States {}
 
 
-//
-// class CategoryByIdSuccessState extends States {
-//   final List<Children> children;
-//
-//   CategoryByIdSuccessState({required this.children});
-// }
-//
-// class ReviewSuccessState extends States {
-//   final ReviewResponse response;
-//
-//   ReviewSuccessState({required this.response});
-// }
-//
-// class GetReviewSuccessState extends States {
-//   final List<Reviews> review;
-//
-//   GetReviewSuccessState({required this.review});
-// }
+class EditBookSuccessState extends States {
+  final UpdateBook book;
+
+  EditBookSuccessState({required this.book});
+}
+
+class DeleteBookSuccessState extends States {
+  final DeleteBookResponse response;
+
+  DeleteBookSuccessState({required this.response});
+}
+
+
+class GetReviewSuccessState extends States {
+  final List<Reviews> review;
+
+  GetReviewSuccessState({required this.review});
+}
 //
 //
 // class SaveBookSuccessState extends States {

@@ -11,6 +11,12 @@ import '../States/States.dart';
 class CategoryCubit extends Cubit<States> {
    final CategoryRepository repository;
    List<Children> children = [];
+   Children? selectedCategory;
+   String? selectedCategoryId;
+   Parents? selectedParent;
+   List<Parents> parents = [];
+   String? selectedParentId;
+
 
    Map<String, List<Children>> cachedCategories = {}; // parentId → list
 
@@ -72,7 +78,7 @@ class CategoryCubit extends Cubit<States> {
          },
        );
 
-       List<Parents> parents = [];
+
        catEither.fold(
              (l) => emit(ErrorState(errorMessage: l.error?.message)),
              (response) {

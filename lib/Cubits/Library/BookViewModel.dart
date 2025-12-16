@@ -6,9 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:online_library_management/Models/Requests/AddBookRequest.dart';
+import 'package:online_library_management/Models/Responses/UpdateBookResponse.dart';
 import 'package:online_library_management/Repositories/BookRepository.dart';
 import 'package:online_library_management/Repositories/CategoryRepository.dart';
 
+import '../../Models/Requests/UpdateBookRequest.dart';
+import '../../Models/Responses/BookByIdResponse.dart';
 import '../../Models/Responses/BooksByCategoryIdResponse.dart';
 import '../States/States.dart';
 
@@ -20,6 +23,9 @@ class BookCubit extends Cubit<States> {
 
   List<BooksByCategoryId> booksByCategory = [];
   Map<String, List<BooksByCategoryId>> cachedBooks = {}; // categoryId → books list
+  String? mainImageNetwork;
+  List<String> galleryNetworkImages = [];
+
 
   TextEditingController publisherController = TextEditingController();
   TextEditingController writerController = TextEditingController();
@@ -184,6 +190,116 @@ class BookCubit extends Cubit<States> {
 
     emit(BookFormClearedState());
   }
+
+  Future<void> getBookDetails(String bookId) async {
+    emit(LoadingState(loadingMessage: 'جارى التحميل')); // ⬅️ عشان يمسح القديم ويعرض loader
+
+    var either = await bookRepository.getBookById(bookId);
+    either.fold(
+            (l) {
+          emit(ErrorState(errorMessage: l.error?.message));
+        },
+            (success) {
+          emit(BookDetailsSuccessState(book: success.data!.book!));
+        }
+
+    );
+  }
+
+  Future<void> editBook(UpdateBookRequest request, String bookId) async {
+    emit(LoadingState(loadingMessage: "Editing book..."));
+
+    try {
+      final either = await bookRepository.editBook(request, bookId);
+
+      either.fold(
+            (l) {
+          emit(ErrorState(errorMessage: l.error?.message));
+        },
+            (response) {
+          emit(EditBookSuccessState(book: response.data!.book!));
+         // loadHomeData();
+        },
+      );
+    } catch (e) {
+      emit(ErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  void initEditBook( BookById book) {
+    nameController.text = book.name ?? '';
+    writerController.text = book.writer ?? '';
+    synopsisController.text = book.synopsis ?? '';
+    copiesController.text = book.numberOfCopies.toString();
+    stockController.text = book.numberInStock.toString();
+    publisherController.text = book.publisher ?? '';
+    yearController.text = book.publishYear.toString();
+    editionController.text = book.edition ?? '';
+    languageController.text = book.language ?? '';
+    conditionController.text = book.condition ?? '';
+    pagesController.text = book.numPages.toString();
+    weightController.text = book.weight.toString();
+
+    //selectedCategoryId = book.categoryId as String?;
+
+    // الصور
+    mainImageNetwork = book.mainImage;
+    galleryNetworkImages = List.from(book.gallery ?? []);
+  }
+
+  UpdateBookRequest buildUpdateRequest() {
+    List<String> gallery = [];
+
+    // الصور القديمة (network)
+    gallery.addAll(galleryNetworkImages);
+
+    // الصور الجديدة (base64)
+    gallery.addAll(
+      galleryBase64List.map((img) => "data:image/png;base64,$img"),
+    );
+
+    return UpdateBookRequest(
+      name: nameController.text,
+      writer: writerController.text,
+      synopsis: synopsisController.text,
+      publisher: publisherController.text,
+      language: languageController.text,
+      edition: editionController.text,
+      condition: conditionController.text,
+
+      publishYear: int.tryParse(yearController.text),
+      numPages: int.tryParse(pagesController.text),
+      weight: int.tryParse(weightController.text),
+      numberOfCopies: int.tryParse(copiesController.text),
+      numberInStock: int.tryParse(stockController.text),
+
+      // هنا التعديل المهم
+      mainImage: mainImageBase64 != null
+          ? "data:image/png;base64,$mainImageBase64"
+          : mainImageNetwork ?? "",
+
+      gallery: gallery.isEmpty ? null : gallery,
+    );
+  }
+
+
+  Future<void> deleteBook(String bookId) async {
+    emit(LoadingState(loadingMessage: 'Loading...'));
+
+    final either = await bookRepository.deleteBook(bookId);
+
+    await either.fold(
+          (failure) {
+        emit(ErrorState(errorMessage: failure.error?.message ?? "try again later!"));
+      },
+          (response) async {
+        emit(DeleteBookSuccessState(response: response));
+
+      },
+    );
+  }
+
+
 
 
 }

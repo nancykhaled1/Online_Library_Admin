@@ -9,6 +9,7 @@ import 'package:online_library_management/Views/Library/SubCategoriesScreen.dart
 import '../../Cubits/States/States.dart';
 import '../../Utils/CommenConfirmSheet.dart';
 import 'AddBookScreen.dart';
+import 'BookDetailsScreen.dart';
 import 'EditBottomSheet.dart';
 
 class BookScreen extends StatefulWidget{
@@ -92,7 +93,7 @@ class _BookScreenState extends State<BookScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/images/nofound.png', height: 100,),
+                    Image.asset('assets/images/nofound.png', height: 200.h,),
                     SizedBox(width: 5.w,),
                     Text(
                       "No books found in this category",
@@ -118,13 +119,13 @@ class _BookScreenState extends State<BookScreen> {
                   final book = books[index];
                   return GestureDetector(
                     onTap: () {
-                      // setState(() {
-                      //   currentSelectedCategoryId = cat.id!;
-                      // });
-                      //
-                      // context
-                      //     .read<BookCubit>()
-                      //     .getBookByCategoryId(cat.id!);
+                      Navigator.of(context).pushReplacement(
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => BookDetailsScreen(bookId: book.id!,),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.all(10.r),
@@ -167,6 +168,7 @@ class _BookScreenState extends State<BookScreen> {
                             BorderRadius.circular(12.r),
                             child:  Image.network(book.mainImage ??'assets/images/book.png',
                               height: 50.h,
+                              width: 50.w,
                               errorBuilder: (context, error, stackTrace) {
                                 return Image.asset("assets/images/img.png", height: 50.h,);
                               },
