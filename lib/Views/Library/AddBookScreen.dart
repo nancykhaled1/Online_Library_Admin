@@ -400,6 +400,14 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
   Widget parentDropdown() {
     final cubit = context.watch<CategoryCubit>();
 
+    // 🛡️ حماية لو الداتا اتغيرت من الباك
+    if (cubit.selectedParentId != null &&
+        !cubit.parents.any((p) => p.id == cubit.selectedParentId)) {
+      cubit.selectedParentId = null;
+      cubit.selectedCategoryId = null;
+      cubit.children = [];
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
@@ -407,20 +415,25 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
         border: Border.all(color: MyColors.outColor),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<Parents>(
-          hint: Text("Select Main Category"),
-          value: cubit.selectedParent,
+        child: DropdownButton<String>(
+          hint: const Text("Select Main Category"),
+          value: cubit.selectedParentId,
           isExpanded: true,
           items: cubit.parents.map((parent) {
-            return DropdownMenuItem(
-              value: parent,
-              child: Text(parent.name!),
+            return DropdownMenuItem<String>(
+              value: parent.id,
+              child: Text(parent.name ?? ''),
             );
           }).toList(),
           onChanged: (value) {
-            cubit.selectedParent = value;
-            cubit.selectedParentId = value!.id; // 👈 المهم
-            setState(() {}); // ✅ لتحديث الـ Dropdown
+            if (value == cubit.selectedParentId) return;
+
+            cubit.selectedParentId = value;
+            cubit.selectedCategoryId = null; // ⛔ مسح الاختيار القديم
+            cubit.children = [];
+
+            // 👈 هات الكاتيجوريز الخاصة بالـ main
+            cubit.getCategoryById(value!);
           },
         ),
       ),
@@ -430,6 +443,12 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
   Widget categoryDropdown() {
     final cubit = context.watch<CategoryCubit>();
 
+    // 🛡️ حماية لو الكاتيجوري اختفت
+    if (cubit.selectedCategoryId != null &&
+        !cubit.children.any((c) => c.id == cubit.selectedCategoryId)) {
+      cubit.selectedCategoryId = null;
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
@@ -437,20 +456,20 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
         border: Border.all(color: MyColors.outColor),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<Children>(
-          hint: Text("Select Category"),
-          value: cubit.selectedCategory,
+        child: DropdownButton<String>(
+          hint: const Text("Select Category"),
+          value: cubit.selectedCategoryId,
           isExpanded: true,
           items: cubit.children.map((cat) {
-            return DropdownMenuItem(
-              value: cat,
-              child: Text(cat.name!),
+            return DropdownMenuItem<String>(
+              value: cat.id,
+              child: Text(cat.name ?? ''),
             );
           }).toList(),
-          onChanged: (value) {
-            cubit.selectedCategory = value;
-            cubit.selectedCategoryId = value!.id; // 👈 المهم
-            setState(() {}); // ✅ لتحديث الـ Dropdown
+          onChanged: cubit.children.isEmpty
+              ? null
+              : (value) {
+            cubit.selectedCategoryId = value;
           },
         ),
       ),

@@ -4,6 +4,7 @@
 
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
+import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
 
 import '../../Models/Responses/AddBookResponse.dart';
 import '../../Models/Responses/AllCategoriesResponse.dart';
@@ -11,7 +12,9 @@ import '../../Models/Responses/BookByIdResponse.dart';
 import '../../Models/Responses/BookReviewResponse.dart';
 import '../../Models/Responses/BooksByCategoryIdResponse.dart';
 import '../../Models/Responses/CategoryByIdResponse.dart';
+import '../../Models/Responses/GetNotificationResponse.dart';
 import '../../Models/Responses/LoginResponse.dart';
+import '../../Models/Responses/NotificationDetailsResponse.dart';
 import '../../Models/Responses/ParentCategoryResponse.dart';
 import '../../Models/Responses/UpdateBookResponse.dart';
 
@@ -130,6 +133,25 @@ class GetReviewSuccessState extends States {
 
   GetReviewSuccessState({required this.review});
 }
+
+class GetNotificationSuccessState extends States {
+  final List<Notifications> notifications;
+
+  GetNotificationSuccessState({required this.notifications});
+}
+
+class NotificationDetailsSuccessState extends States {
+  final DataDetails notificationDetails;
+
+  NotificationDetailsSuccessState({required this.notificationDetails});
+}
+
+class DeleteNotificationSuccessState extends States {
+  final DeleteNotificationResponse response;
+
+  DeleteNotificationSuccessState({required this.response});
+}
+
 //
 //
 // class SaveBookSuccessState extends States {
@@ -211,17 +233,7 @@ class GetReviewSuccessState extends States {
 //   NotificationSuccessState({required this.response});
 // }
 //
-// class GetNotificationSuccessState extends States {
-//   final List<Notifications> notifications;
-//
-//   GetNotificationSuccessState({required this.notifications});
-// }
-//
-// class NotificationDetailsSuccessState extends States {
-//   final DataDetails notificationDetails;
-//
-//   NotificationDetailsSuccessState({required this.notificationDetails});
-// }
+
 //
 // class CounterSuccessState extends States {
 //   final CounterData counterData;

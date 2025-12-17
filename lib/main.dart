@@ -4,15 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
 import 'package:online_library_management/Cubits/Library/CategoryViewModel.dart';
+import 'package:online_library_management/Cubits/Notification/NotificationViewModel.dart';
 import 'package:online_library_management/Repositories/BookRepository.dart';
 import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
 import 'Cubits/Auth/LoginScreenViewModel.dart';
 import 'Cubits/Library/ReviewViewModel.dart';
+import 'Repositories/GetNotificationRepository.dart';
 import 'Repositories/LoginRepository.dart';
 import 'Services/Remote/ApiManager.dart';
 import 'Sources/LoginDataSource.dart';
+import 'Sources/getNotificationDataSource.dart';
 import 'Utils/MyColors.dart';
 import 'Views/Auth/LoginScreen.dart';
 import 'Views/Home/HomeScreen.dart';
@@ -36,6 +39,9 @@ Future<void> main() async {
   final addBookRemoteDataSource = AddBookRemoteDataSource(apiManager);
   final addBookRepository = AddBookRepository(addBookRemoteDataSource);
 
+  final getNotificationDataSource = GetNotificationRemoteDataSource(apiManager);
+  final getnotification = GetNotificationRepository(getNotificationDataSource);
+
   runApp(
 
     MultiRepositoryProvider(
@@ -51,6 +57,10 @@ Future<void> main() async {
         ),
         RepositoryProvider<AddBookRepository>(
           create: (context) => addBookRepository,
+        ),
+
+        RepositoryProvider<GetNotificationRepository>(
+          create: (context) => getnotification,
         ),
 
 
@@ -84,6 +94,13 @@ Future<void> main() async {
                 context.read<AddBookRepository>()
             ),
           ),
+
+          BlocProvider(
+            create: (context) => NotificationScreenViewModel(
+                context.read<GetNotificationRepository>()
+            ),
+          ),
+
 
 
         ],

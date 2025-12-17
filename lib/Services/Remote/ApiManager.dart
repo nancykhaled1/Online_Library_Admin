@@ -9,6 +9,7 @@ import 'package:online_library_management/Models/Requests/ParentCategoryRequest.
 import 'package:online_library_management/Models/Responses/AddBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
+import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
 import 'package:online_library_management/Models/Responses/ParentCategoryResponse.dart';
 
 import '../../Models/Requests/LoginRequest.dart';
@@ -18,8 +19,10 @@ import '../../Models/Responses/BookByIdResponse.dart';
 import '../../Models/Responses/BookReviewResponse.dart';
 import '../../Models/Responses/BooksByCategoryIdResponse.dart';
 import '../../Models/Responses/CategoryByIdResponse.dart';
+import '../../Models/Responses/GetNotificationResponse.dart';
 import '../../Models/Responses/LoginError.dart';
 import '../../Models/Responses/LoginResponse.dart';
+import '../../Models/Responses/NotificationDetailsResponse.dart';
 import '../../Models/Responses/UpdateBookResponse.dart';
 import '../Local/SharedPreference.dart';
 import 'ApiConstants.dart';
@@ -816,6 +819,173 @@ class ApiManager{
       if (response.statusCode >= 200 && response.statusCode < 300) {
         var bookReviewResponse = BookReviewResponse.fromJson(jsonResponse);
         return right(bookReviewResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
+          ),
+        ),
+      );
+    }
+  }
+
+
+  Future<Either<LoginError, GetNotificationResponse>> getNotification() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl, ApiConstants.getNotificationApi);
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $savedToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        /// هنا بعمل parse للـ object كله
+        var getNotificationResponse = GetNotificationResponse.fromJson(jsonResponse);
+
+        return right(getNotificationResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<Either<LoginError, NotificationDetailsResponse>> getNotificationByID(String notificationId) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl, "/api/admin/notification/$notificationId");
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $savedToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      print('Mark as read status: ${response.statusCode}');
+      print('Mark as read body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        var NotificationResponse = NotificationDetailsResponse.fromJson(jsonResponse);
+        return right(NotificationResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<Either<LoginError, DeleteNotificationResponse>> deleteNotification(String notificationId) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl, "/api/admin/notification/$notificationId");
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.delete(
+        url,
+        headers: {
+          "Authorization": "Bearer $savedToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        /// هنا بعمل parse للـ object كله
+        var deleteNotificationResponse = DeleteNotificationResponse.fromJson(jsonResponse);
+
+        return right(deleteNotificationResponse);
       } else {
         return left(LoginError.fromJson(jsonResponse));
       }

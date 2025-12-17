@@ -11,11 +11,19 @@ import '../States/States.dart';
 class CategoryCubit extends Cubit<States> {
    final CategoryRepository repository;
    List<Children> children = [];
-   Children? selectedCategory;
+   // Children? selectedCategory;
    String? selectedCategoryId;
-   Parents? selectedParent;
+   // Parents? selectedParent;
    List<Parents> parents = [];
    String? selectedParentId;
+
+
+   Parents? get selectedParent =>
+       parents.firstWhereOrNull((p) => p.id == selectedParentId);
+
+   Children? get selectedCategory =>
+       children.firstWhereOrNull((c) => c.id == selectedCategoryId);
+
 
 
    Map<String, List<Children>> cachedCategories = {}; // parentId → list
@@ -233,7 +241,14 @@ class CategoryCubit extends Cubit<States> {
 
 }
 
-
+extension FirstWhereOrNullExtension<E> on List<E> {
+  E? firstWhereOrNull(bool Function(E element) test) {
+    for (final element in this) {
+      if (test(element)) return element;
+    }
+    return null;
+  }
+}
 
 
 

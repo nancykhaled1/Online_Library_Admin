@@ -10,6 +10,7 @@ import '../../Cubits/States/States.dart';
 import '../../Models/Requests/ParentCategoryRequest.dart';
 import '../../Utils/CommenConfirmSheet.dart';
 import '../../Utils/dialog.dart';
+import '../Drawer/DrawerScreen.dart';
 import 'EditBottomSheet.dart';
 
 class LibraryScreen extends StatefulWidget{
@@ -54,6 +55,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
           ),
           centerTitle: true,
         ),
+        drawer: const AppDrawer(),
         body: Padding(
           padding: EdgeInsets.symmetric(
             vertical: 20.h,

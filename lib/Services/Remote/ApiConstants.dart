@@ -8,6 +8,7 @@ class ApiConstants{
 
   static const String addBookApi = "/api/admin/books";
 
+  static const String getNotificationApi = "/api/admin/notification";
 
 
 
@@ -30,9 +31,8 @@ class ApiConstants{
 
 
 
-  static const String fcmTokenApi = "/api/user/auth/local/fcm-token";
 
-  static const String getNotificationApi = "/api/user/notification";
+
 
   static const String counterApi = "/api/user/notification/unread-count";
 
