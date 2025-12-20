@@ -3,6 +3,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
 
+import '../Models/Requests/AddNotificationRequest.dart';
+import '../Models/Responses/AddNotificationResponse.dart';
 import '../Models/Responses/GetNotificationResponse.dart';
 import '../Models/Responses/LoginError.dart';
 import '../Models/Responses/NotificationDetailsResponse.dart';
@@ -23,6 +25,10 @@ class GetNotificationRepository {
 
   Future<Either<LoginError, DeleteNotificationResponse>> deleteNotification(String notificationId) {
     return remoteDataSource.deleteNotification(notificationId);
+  }
+
+  Future<Either<LoginError, AddNotificationResponse>> addNotification(AddNotificationRequest request) {
+    return remoteDataSource.addNotification(request);
   }
 
 

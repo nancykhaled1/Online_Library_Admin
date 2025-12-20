@@ -7,6 +7,7 @@ import '../../Cubits/Notification/NotificationViewModel.dart';
 import '../../Cubits/States/States.dart';
 import '../../Utils/MyColors.dart';
 import '../Drawer/DrawerScreen.dart';
+import 'AddNotificationSheet.dart';
 import 'NotificationDetails.dart';
 import 'notification_card.dart';
 
@@ -51,18 +52,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 color: MyColors.blackColor,
               ),
             ),
-            // leading: IconButton(
-            //   onPressed: () {
-            //     // Navigator.of(context).pushReplacement(
-            //     //   PageRouteBuilder(
-            //     //     pageBuilder: (context, animation, secondaryAnimation) => HomeScreen(),
-            //     //     transitionDuration: Duration.zero,
-            //     //     reverseTransitionDuration: Duration.zero,
-            //     //   ),
-            //     // );
-            //   },
-            //   icon: Icon(Icons.arrow_back),
-            // ),
+            actions: [
+              IconButton(
+                  onPressed: (){
+                    addNotificationBottomSheet(context: context,
+                      buttonText: 'Add',
+                      onPressed: (value) {
+
+                        context.read<NotificationScreenViewModel>().addNotification();
+                      },
+
+
+                    );
+                  },
+                  icon:Icon(Icons.add,color: MyColors.primaryColor,size: 25.sp)),
+            ],
           ),
           drawer: AppDrawer(),
           body: Column(

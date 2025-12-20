@@ -189,24 +189,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               child:
-                              // state is LoadingState
-                              //     ? SizedBox(
-                              //   width: 20.w,
-                              //   height: 20.w,
-                              //   child: Row(
-                              //     mainAxisAlignment: MainAxisAlignment.center,
-                              //     children: [
-                              //       CircularProgressIndicator(
-                              //         strokeWidth: 2,
-                              //         valueColor:
-                              //         AlwaysStoppedAnimation<Color>(
-                              //           MyColors.whiteColor,
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // )
-                              //     :
+                              state is LoadingState
+                                  ? SizedBox(
+                                width: 20.w,
+                                height: 20.w,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor:
+                                      AlwaysStoppedAnimation<Color>(
+                                        MyColors.whiteColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  :
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

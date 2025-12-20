@@ -28,8 +28,9 @@ class NotificationCard extends StatelessWidget {
     // حاولنا نعمل فورمات للتاريخ لو اتبعت صح من الـ API
 
     final DateTime parsedDate = DateTime.parse(date ).toLocal();
-    final String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
-    final String formattedTime = DateFormat('HH:mm').format(parsedDate);
+    final formattedDate = DateFormat(
+      'HH:mm – dd/MM/yyyy',
+    ).format(parsedDate);
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -86,23 +87,7 @@ class NotificationCard extends StatelessWidget {
 
                   ],
                 ),
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(Icons.timer_outlined,color: MyColors.greyColor,size: 15.sp,),
-                    SizedBox(width: 5.w,),
-                    Text(
-                      '$formattedDate.$formattedTime',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12.sp,
-                        color: MyColors.greyColor,
-                      ),
-                    ),
-                  ],
-                ),
 
-                SizedBox(height: 8.h),
                 Text(
                   body,
                   maxLines: 3,
@@ -113,6 +98,24 @@ class NotificationCard extends StatelessWidget {
                     color: MyColors.greyColor,
                   ),
                 ),
+                SizedBox(height: 8.h),
+
+                Row(
+                   mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(Icons.timer_outlined,color: MyColors.greyColor,size: 15.sp,),
+                    SizedBox(width: 5.w,),
+                    Text(
+                      '$formattedDate',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12.sp,
+                        color: MyColors.greyColor,
+                      ),
+                    ),
+                  ],
+                ),
+
 
               ],
             ),

@@ -7,6 +7,7 @@ import 'package:online_library_management/Models/Responses/DeleteCategoryRespons
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
 
 import '../../Models/Responses/AddBookResponse.dart';
+import '../../Models/Responses/AddNotificationResponse.dart';
 import '../../Models/Responses/AllCategoriesResponse.dart';
 import '../../Models/Responses/BookByIdResponse.dart';
 import '../../Models/Responses/BookReviewResponse.dart';
@@ -150,6 +151,12 @@ class DeleteNotificationSuccessState extends States {
   final DeleteNotificationResponse response;
 
   DeleteNotificationSuccessState({required this.response});
+}
+
+class AddNotificationSuccessState extends States {
+  final AddNotificationResponse response;
+
+  AddNotificationSuccessState({required this.response});
 }
 
 //
