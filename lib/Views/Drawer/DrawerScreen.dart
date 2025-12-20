@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
 
 import '../../Utils/MyColors.dart';
 import '../Library/LibraryScreen.dart';
@@ -77,14 +78,14 @@ class AppDrawer extends StatelessWidget {
 
           _drawerItem(
             icon: Icons.add_box,
-            title: "Add New Book",
+            title: "Borrowed",
             onTap: () {
-              // Navigator.pushReplacement(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (_) => AddNewBookScreen(categoryId: ""),
-              //   ),
-              // );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BorrowedScreen(),
+                ),
+              );
             },
           ),
 

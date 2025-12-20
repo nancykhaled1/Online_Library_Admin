@@ -10,6 +10,7 @@ class ApiConstants{
 
   static const String getNotificationApi = "/api/admin/notification";
 
+  static const String borrowApi = "/api/admin/borrows";
 
 
 
@@ -27,7 +28,6 @@ class ApiConstants{
 
   static const String getSaveBookApi = "/api/user/favorite-books";
 
-  static const String borrowApi = "/api/user/borrows";
 
 
 

@@ -8,6 +8,7 @@ import 'package:online_library_management/Models/Requests/AddNotificationRequest
 import 'package:online_library_management/Models/Requests/CategoryRequest.dart';
 import 'package:online_library_management/Models/Requests/ParentCategoryRequest.dart';
 import 'package:online_library_management/Models/Responses/AddBookResponse.dart';
+import 'package:online_library_management/Models/Responses/BorrowedReturnedResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
@@ -1068,6 +1069,64 @@ class ApiManager{
     }
   }
 
+  Future<Either<LoginError, BorrowedReturnedResponse>> getBorrowBooks() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl, ApiConstants.borrowApi);
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $savedToken",
+
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        /// هنا بعمل parse للـ object كله
+        var borrowBooksResponse = BorrowedReturnedResponse.fromJson(jsonResponse);
+
+        return right(borrowBooksResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
+            // details: "Please check your connection and try again.",
+          ),
+        ),
+      );
+    }
+  }
 
 
 }

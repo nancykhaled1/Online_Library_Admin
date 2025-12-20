@@ -2,6 +2,7 @@
 
 
 
+import 'package:online_library_management/Models/Responses/BorrowedReturnedResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
@@ -159,8 +160,14 @@ class AddNotificationSuccessState extends States {
   AddNotificationSuccessState({required this.response});
 }
 
-//
-//
+class GetBorrowBooksSuccessState extends States {
+  final List<BorrowedBooks> borrow;
+  final List<ReturnedBooks> returned;
+
+  GetBorrowBooksSuccessState({required this.borrow,required this.returned});
+}
+
+
 // class SaveBookSuccessState extends States {
 //   final SaveBookResponse response;
 //
@@ -193,12 +200,7 @@ class AddNotificationSuccessState extends States {
 //   BorrowBooksSuccessState({required this.borrowData});
 // }
 //
-// class GetBorrowBooksSuccessState extends States {
-//   final List<Borrowed> borrow;
-//   final List<Returned> returned;
-//
-//   GetBorrowBooksSuccessState({required this.borrow,required this.returned});
-// }
+
 //
 //
 //

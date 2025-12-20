@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:online_library_management/Cubits/Borrowed/BorrowedViewModel.dart';
 import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
 import 'package:online_library_management/Cubits/Library/CategoryViewModel.dart';
 import 'package:online_library_management/Cubits/Notification/NotificationViewModel.dart';
 import 'package:online_library_management/Repositories/BookRepository.dart';
+import 'package:online_library_management/Repositories/BorrowRepository.dart';
 import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
@@ -14,6 +16,7 @@ import 'Cubits/Library/ReviewViewModel.dart';
 import 'Repositories/GetNotificationRepository.dart';
 import 'Repositories/LoginRepository.dart';
 import 'Services/Remote/ApiManager.dart';
+import 'Sources/BorrowDataSource.dart';
 import 'Sources/LoginDataSource.dart';
 import 'Sources/getNotificationDataSource.dart';
 import 'Utils/MyColors.dart';
@@ -42,6 +45,9 @@ Future<void> main() async {
   final getNotificationDataSource = GetNotificationRemoteDataSource(apiManager);
   final getnotification = GetNotificationRepository(getNotificationDataSource);
 
+  final borrowDataSource = BorrowRemoteDataSource(apiManager);
+  final borrow = BorrowRepository(borrowDataSource);
+
   runApp(
 
     MultiRepositoryProvider(
@@ -61,6 +67,9 @@ Future<void> main() async {
 
         RepositoryProvider<GetNotificationRepository>(
           create: (context) => getnotification,
+        ),
+        RepositoryProvider<BorrowRepository>(
+          create: (context) => borrow,
         ),
 
 
@@ -98,6 +107,12 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => NotificationScreenViewModel(
                 context.read<GetNotificationRepository>()
+            ),
+          ),
+
+          BlocProvider(
+            create: (context) => BorrowCubit(
+                context.read<BorrowRepository>()
             ),
           ),
 
