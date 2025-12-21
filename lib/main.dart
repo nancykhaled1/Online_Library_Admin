@@ -11,6 +11,7 @@ import 'package:online_library_management/Repositories/BorrowRepository.dart';
 import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
+import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
 import 'Cubits/Auth/LoginScreenViewModel.dart';
 import 'Cubits/Library/ReviewViewModel.dart';
 import 'Repositories/GetNotificationRepository.dart';
@@ -155,6 +156,7 @@ class MyApp extends StatelessWidget {
                  LoginScreen.routeName : (context) => LoginScreen(),
                 LibraryScreen.routeName : (context) => LibraryScreen(),
                 CategoryScreen.routeName : (context) => CategoryScreen(),
+                BorrowedScreen.routeName : (context) => BorrowedScreen()
                 // RegisterScreen.routeName : (context) => RegisterScreen(),
                 // LibraryHomeScreen.routeName : (context) => LibraryHomeScreen(),
                 // MyShelfScreen.routeName : (context) => MyShelfScreen()

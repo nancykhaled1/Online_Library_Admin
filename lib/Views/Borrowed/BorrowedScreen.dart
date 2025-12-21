@@ -4,9 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
 import 'package:online_library_management/Utils/MyColors.dart';
+import 'package:online_library_management/Views/Borrowed/scannerScreen.dart';
 import 'package:online_library_management/Views/Drawer/DrawerScreen.dart';
-import 'package:online_library_management/Views/Library/SubCategoriesScreen.dart';
-
 import '../../Cubits/Borrowed/BorrowedViewModel.dart';
 import '../../Cubits/States/States.dart';
 
@@ -51,6 +50,19 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
             ),
           ),
           centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: (){
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ScanBorrowScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.qr_code_scanner,size: 30.sp,)
+            ),
+          ],
         ),
         drawer: AppDrawer(),
         body: Padding(
@@ -172,7 +184,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                       borrowed.book?.mainImage ?? '',
                                       height: 100.h,
                                       width: 70.w,
-                                      fit: BoxFit.cover,
+                                    //  fit: BoxFit.cover,
 
                                       // 🔄 Loader أثناء التحميل
                                       loadingBuilder: (context, child, loadingProgress) {
@@ -204,95 +216,40 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 10.w,),
-                                Row(
-                                children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
 
-                                        Text('${borrowed.status}',
-                                          style: TextStyle(
-                                              color: MyColors.darkOrangeColor,
-                                              fontSize: 12.sp
-                                          ),
-                                        ),
-                                        SizedBox(height: 4.h),
-
-                                        Text(
-                                          borrowed.book?.name ??'',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w700,
-                                              color: MyColors.blackColor),
-
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        Text(
-                                          borrowed.book?.publisher ??'',
-                                          style: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: MyColors.greyColor),
-
-                                        ),
-                                        SizedBox(height: 10.h),
-
-                                        Container(
-                                          padding: EdgeInsets.all(8.r),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(14.r),
-
-                                              color: MyColors.softColor
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 10.r,
-                                                backgroundColor: MyColors.whiteColor,
-                                                child: ClipOval(
-                                                  child: (borrowed.user?.photo != null && borrowed.user!.photo!.startsWith("http"))
-                                                      ? Image.network(
-                                                    borrowed.user!.photo!,
-                                                    key: UniqueKey(),
-                                                    fit: BoxFit.cover,
-                                                    width: 100.w,
-                                                    height: 100.h,
-                                                    errorBuilder: (context, error, stackTrace) {
-                                                      return Image.asset(
-                                                        'assets/images/personalImage.png',
-                                                        fit: BoxFit.cover,
-                                                        width: 100.w,
-                                                        height: 100.h,
-                                                      );
-                                                    },
-                                                  )
-                                                      : Image.asset(
-                                                    'assets/images/personalImage.png',
-                                                    fit: BoxFit.cover,
-                                                    width: 100.w,
-                                                    height: 100.h,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 5.w,),
-                                              Text(borrowed.user?.name ??'',
-                                                style: TextStyle(
-                                                    color: MyColors.blackColor,
-                                                    fontSize: 12.sp
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                      ],
+                                    Text('${borrowed.status}',
+                                      style: TextStyle(
+                                          color: MyColors.darkOrangeColor,
+                                          fontSize: 12.sp
+                                      ),
                                     ),
-                                  SizedBox(width: 8.w,),
+                                    SizedBox(height: 4.h),
 
-                                  Column(
+                                    Text(
+                                      borrowed.book?.name ??'',
+                                      maxLines: 3,
+                                      softWrap: true,        // يسمح بالانتقال للسطر الجديد
+                                     // overflow: TextOverflow.ellipsis, // يظهر النص بالكامل
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w700,
+                                          color: MyColors.blackColor),
+
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      borrowed.book?.publisher ??'',
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: MyColors.greyColor),
+
+                                    ),
+                                    SizedBox(height: 10.h),
+                                    Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('Returned in',
@@ -312,6 +269,58 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
 
                                       ],
                                     ),
+
+                                    SizedBox(height: 10.h),
+
+                                    Container(
+                                      padding: EdgeInsets.all(8.r),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(14.r),
+
+                                          color: MyColors.softColor
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 10.r,
+                                            backgroundColor: MyColors.whiteColor,
+                                            child: ClipOval(
+                                              child: (borrowed.user?.photo != null && borrowed.user!.photo!.startsWith("http"))
+                                                  ? Image.network(
+                                                borrowed.user!.photo!,
+                                                key: UniqueKey(),
+                                                fit: BoxFit.cover,
+                                                width: 100.w,
+                                                height: 100.h,
+                                                errorBuilder: (context, error, stackTrace) {
+                                                  return Image.asset(
+                                                    'assets/images/personalImage.png',
+                                                    fit: BoxFit.cover,
+                                                    width: 100.w,
+                                                    height: 100.h,
+                                                  );
+                                                },
+                                              )
+                                                  : Image.asset(
+                                                'assets/images/personalImage.png',
+                                                fit: BoxFit.cover,
+                                                width: 100.w,
+                                                height: 100.h,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 5.w,),
+                                          Text(borrowed.user?.name ??'',
+                                            style: TextStyle(
+                                                color: MyColors.blackColor,
+                                                fontSize: 12.sp
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
                                   ],
                                 ),
 

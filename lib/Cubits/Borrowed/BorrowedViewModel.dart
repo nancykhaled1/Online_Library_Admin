@@ -30,6 +30,33 @@ class BorrowCubit extends Cubit<States> {
   }
 
 
+  Future<void> scanBorrowedBook(String bookId) async {
+    emit(LoadingState(loadingMessage: 'Loading...'));
+
+    final either = await repository.scanBook(bookId);
+
+    either.fold(
+          (l) {
+            emit(ErrorState(errorMessage: l.error?.message));
+      },
+          (success) {
+        final borrow = success.data?.borrow;
+        if (borrow == null) {
+            print("Borrow ID is null");
+
+          emit(
+            ErrorState(errorMessage: 'No borrow data found'),
+          );
+          return;
+        }
+        emit(
+          ScanBorrowSuccessState(borrow: borrow),
+        );
+      },
+    );
+  }
+
+
 
 
 

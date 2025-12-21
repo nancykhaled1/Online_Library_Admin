@@ -18,6 +18,7 @@ import '../../Models/Responses/GetNotificationResponse.dart';
 import '../../Models/Responses/LoginResponse.dart';
 import '../../Models/Responses/NotificationDetailsResponse.dart';
 import '../../Models/Responses/ParentCategoryResponse.dart';
+import '../../Models/Responses/ScanBorrowedResponse.dart';
 import '../../Models/Responses/UpdateBookResponse.dart';
 
 abstract class States{}
@@ -165,6 +166,11 @@ class GetBorrowBooksSuccessState extends States {
   final List<ReturnedBooks> returned;
 
   GetBorrowBooksSuccessState({required this.borrow,required this.returned});
+}
+
+class ScanBorrowSuccessState extends States {
+  final Borrow borrow;
+  ScanBorrowSuccessState({required this.borrow});
 }
 
 

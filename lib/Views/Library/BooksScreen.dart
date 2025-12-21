@@ -195,7 +195,9 @@ class _BookScreenState extends State<BookScreen> {
             Navigator.of(context).pushReplacement(
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                    AddNewBookScreen(categoryId: widget.categoryId),
+                    AddNewBookScreen(
+                        // categoryId: widget.categoryId
+                    ),
                 transitionDuration: Duration.zero,
                 reverseTransitionDuration: Duration.zero,
               ),

@@ -13,6 +13,7 @@ import 'package:online_library_management/Models/Responses/DeleteBookResponse.da
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
 import 'package:online_library_management/Models/Responses/ParentCategoryResponse.dart';
+import 'package:online_library_management/Models/Responses/ScanBorrowedResponse.dart';
 
 import '../../Models/Requests/LoginRequest.dart';
 import '../../Models/Requests/UpdateBookRequest.dart';
@@ -1122,6 +1123,64 @@ class ApiManager{
             code: 0,
             message: "No Internet Connection",
             // details: "Please check your connection and try again.",
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<Either<LoginError, ScanBorrowedResponse>> scanBook(String bookId) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl, "/api/admin/borrows/scan/$bookId");
+
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $savedToken",
+
+        },
+      );
+
+
+      print('Mark as read status: ${response.statusCode}');
+      print('Mark as read body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        var scanBorrowedResponse = ScanBorrowedResponse.fromJson(jsonResponse);
+        return right(scanBorrowedResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
           ),
         ),
       );

@@ -12,9 +12,9 @@ import '../../Utils/dialog.dart';
 import 'LibraryScreen.dart';
 
 class AddNewBookScreen extends StatefulWidget {
-  final String categoryId;
+  //final String categoryId;
 
-  AddNewBookScreen({super.key, required this.categoryId});
+  AddNewBookScreen({super.key, });
 
   @override
   State<AddNewBookScreen> createState() => _AddNewBookScreenState();
