@@ -10,16 +10,16 @@ import '../../Cubits/Borrowed/BorrowedViewModel.dart';
 import '../../Cubits/States/States.dart';
 
 
-class BorrowedScreen extends StatefulWidget{
-  static const routeName = 'borrowed';
+class ReturnedScreen extends StatefulWidget{
+  static const routeName = 'returned';
 
-  const BorrowedScreen({super.key});
+  const ReturnedScreen({super.key});
 
   @override
-  State<BorrowedScreen> createState() => _BorrowedScreenState();
+  State<ReturnedScreen> createState() => _ReturnedScreenState();
 }
 
-class _BorrowedScreenState extends State<BorrowedScreen> {
+class _ReturnedScreenState extends State<ReturnedScreen> {
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
           elevation: 0,
           scrolledUnderElevation: 0,
           title: Text(
-            'Borrowed List',
+            'Returned List',
             style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 20.sp,
@@ -57,7 +57,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => ScanBorrowScreen(
-                        scanType: ScanType.borrow,
+                        scanType: ScanType.returnBook,
                       ),
                     ),
                   );
@@ -77,7 +77,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Your borrowed list',
+                'Your returned list',
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 20.sp,
@@ -130,8 +130,8 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                   }
 
                   if (state is GetBorrowBooksSuccessState) {
-                    final borrow = state.borrow;
-                    if (borrow.isEmpty) {
+                    final returned = state.returned;
+                    if (returned.isEmpty) {
                       return Center(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,7 +140,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                             Image.asset('assets/images/nofound.png'),
                             SizedBox(height: 10.h,),
                             Text(
-                              "No borrowed books yet!",
+                              "No returned books yet!",
                               style: TextStyle(
                                 fontSize: 20.sp,
                                 color: MyColors.blackColor,
@@ -155,11 +155,11 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                     return Expanded(
                       child: ListView.separated(
                         scrollDirection: Axis.vertical,
-                        itemCount: borrow.length,
+                        itemCount: returned.length,
                         separatorBuilder: (_, __) =>
                             SizedBox(height: 10.h),
                         itemBuilder: (context, index) {
-                          final borrowed = borrow[index];
+                          final returnedBook = returned[index];
                           return Container(
                             padding: EdgeInsets.all(10.r),
                             decoration: BoxDecoration(
@@ -184,10 +184,10 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                       ),
                                     ),
                                     child: Image.network(
-                                      borrowed.book?.mainImage ?? '',
+                                      returnedBook.book?.mainImage ?? '',
                                       height: 100.h,
                                       width: 70.w,
-                                    //  fit: BoxFit.cover,
+                                      //  fit: BoxFit.cover,
 
                                       // 🔄 Loader أثناء التحميل
                                       loadingBuilder: (context, child, loadingProgress) {
@@ -223,19 +223,19 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
 
-                                    Text('${borrowed.status}',
+                                    Text('${returnedBook.status}',
                                       style: TextStyle(
-                                          color: MyColors.darkOrangeColor,
+                                          color: MyColors.darkGreenColor,
                                           fontSize: 12.sp
                                       ),
                                     ),
                                     SizedBox(height: 4.h),
 
                                     Text(
-                                      borrowed.book?.name ??'',
+                                      returnedBook.book?.name ??'',
                                       maxLines: 3,
                                       softWrap: true,        // يسمح بالانتقال للسطر الجديد
-                                     // overflow: TextOverflow.ellipsis, // يظهر النص بالكامل
+                                      // overflow: TextOverflow.ellipsis, // يظهر النص بالكامل
                                       style: TextStyle(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w700,
@@ -244,7 +244,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                     ),
                                     SizedBox(height: 4.h),
                                     Text(
-                                      borrowed.book?.publisher ??'',
+                                      returnedBook.book?.publisher ??'',
                                       style: TextStyle(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w500,
@@ -263,7 +263,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                         ),
                                         SizedBox(height: 4.h),
 
-                                        Text('${borrowed.mustReturnDate}',
+                                        Text('${returnedBook.returnDate}',
                                           style: TextStyle(
                                               color: MyColors.blackColor,
                                               fontSize: 15.sp
@@ -289,9 +289,9 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                             radius: 10.r,
                                             backgroundColor: MyColors.whiteColor,
                                             child: ClipOval(
-                                              child: (borrowed.user?.photo != null && borrowed.user!.photo!.startsWith("http"))
+                                              child: (returnedBook.user?.photo != null && returnedBook.user!.photo!.startsWith("http"))
                                                   ? Image.network(
-                                                borrowed.user!.photo!,
+                                                returnedBook.user!.photo!,
                                                 key: UniqueKey(),
                                                 fit: BoxFit.cover,
                                                 width: 100.w,
@@ -314,7 +314,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                             ),
                                           ),
                                           SizedBox(width: 5.w,),
-                                          Text(borrowed.user?.name ??'',
+                                          Text(returnedBook.user?.name ??'',
                                             style: TextStyle(
                                                 color: MyColors.blackColor,
                                                 fontSize: 12.sp

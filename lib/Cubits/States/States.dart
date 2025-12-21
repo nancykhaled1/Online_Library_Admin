@@ -6,6 +6,7 @@ import 'package:online_library_management/Models/Responses/BorrowedReturnedRespo
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
+import 'package:online_library_management/Models/Responses/ScanReturnResponse.dart';
 
 import '../../Models/Responses/AddBookResponse.dart';
 import '../../Models/Responses/AddNotificationResponse.dart';
@@ -171,6 +172,11 @@ class GetBorrowBooksSuccessState extends States {
 class ScanBorrowSuccessState extends States {
   final Borrow borrow;
   ScanBorrowSuccessState({required this.borrow});
+}
+
+class ScanReturnSuccessState extends States {
+  final Return returned;
+  ScanReturnSuccessState({required this.returned});
 }
 
 

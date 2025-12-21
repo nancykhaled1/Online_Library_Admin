@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
 
 import '../../Utils/MyColors.dart';
+import '../Borrowed/ReturnedScreen.dart';
 import '../Library/LibraryScreen.dart';
 import '../Notification/NotificationScreen.dart';
 
@@ -84,6 +85,18 @@ class AppDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => BorrowedScreen(),
+                ),
+              );
+            },
+          ),
+          _drawerItem(
+            icon: Icons.add_box,
+            title: "Returned",
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ReturnedScreen(),
                 ),
               );
             },

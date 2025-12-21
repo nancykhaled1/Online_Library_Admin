@@ -4,8 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_library_management/Cubits/Library/BookViewModel.dart';
 import '../../Cubits/Library/CategoryViewModel.dart';
 import '../../Cubits/States/States.dart';
-import '../../Models/Responses/AllCategoriesResponse.dart';
-import '../../Models/Responses/CategoryByIdResponse.dart';
 import '../../Utils/MyColors.dart';
 import '../../Utils/TextField.dart';
 import '../../Utils/dialog.dart';
@@ -59,8 +57,8 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
               showOverlayMessage(context, state.errorMessage!, isError: true);
 
             }
-            else if (state is LoginSuccessState) {
-              showOverlayMessage(context, state.response.data!.message!, isError: false);
+            else if (state is AddBookSuccessState) {
+              showOverlayMessage(context, state.book.data!.message!, isError: false);
               context.read<BookCubit>().clearForm();
 
               Navigator.of(context).pushReplacement(
@@ -400,14 +398,6 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
   Widget parentDropdown() {
     final cubit = context.watch<CategoryCubit>();
 
-    // 🛡️ حماية لو الداتا اتغيرت من الباك
-    if (cubit.selectedParentId != null &&
-        !cubit.parents.any((p) => p.id == cubit.selectedParentId)) {
-      cubit.selectedParentId = null;
-      cubit.selectedCategoryId = null;
-      cubit.children = [];
-    }
-
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
@@ -417,7 +407,7 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           hint: const Text("Select Main Category"),
-          value: cubit.selectedParentId,
+          value: cubit.selectedParentId, // ⭐ ده اللي بيكتب القيمة
           isExpanded: true,
           items: cubit.parents.map((parent) {
             return DropdownMenuItem<String>(
@@ -426,14 +416,14 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
             );
           }).toList(),
           onChanged: (value) {
-            if (value == cubit.selectedParentId) return;
+            if (value == null) return;
 
             cubit.selectedParentId = value;
-            cubit.selectedCategoryId = null; // ⛔ مسح الاختيار القديم
+            cubit.selectedCategoryId = null;
             cubit.children = [];
 
-            // 👈 هات الكاتيجوريز الخاصة بالـ main
-            cubit.getCategoryById(value!);
+            cubit.getCategoryById(value); // تحميل sub categories
+            cubit.emit(InitialState());
           },
         ),
       ),
@@ -442,12 +432,6 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
 
   Widget categoryDropdown() {
     final cubit = context.watch<CategoryCubit>();
-
-    // 🛡️ حماية لو الكاتيجوري اختفت
-    if (cubit.selectedCategoryId != null &&
-        !cubit.children.any((c) => c.id == cubit.selectedCategoryId)) {
-      cubit.selectedCategoryId = null;
-    }
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -458,7 +442,7 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           hint: const Text("Select Category"),
-          value: cubit.selectedCategoryId,
+          value: cubit.selectedCategoryId, // ⭐ هنا بتظهر القيمة
           isExpanded: true,
           items: cubit.children.map((cat) {
             return DropdownMenuItem<String>(
@@ -470,6 +454,7 @@ class _AddNewBookScreenState extends State<AddNewBookScreen> {
               ? null
               : (value) {
             cubit.selectedCategoryId = value;
+            cubit.emit(InitialState());
           },
         ),
       ),

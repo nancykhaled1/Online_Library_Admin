@@ -30,10 +30,10 @@ class BorrowCubit extends Cubit<States> {
   }
 
 
-  Future<void> scanBorrowedBook(String bookId) async {
+  Future<void> scanBorrowedBook(String borrowId) async {
     emit(LoadingState(loadingMessage: 'Loading...'));
 
-    final either = await repository.scanBook(bookId);
+    final either = await repository.scanBook(borrowId);
 
     either.fold(
           (l) {
@@ -55,6 +55,34 @@ class BorrowCubit extends Cubit<States> {
       },
     );
   }
+
+
+  Future<void> scanReturnedBook(String borrowId) async {
+    emit(LoadingState(loadingMessage: 'Loading...'));
+
+    final either = await repository.scanReturn(borrowId);
+
+    either.fold(
+          (l) {
+        emit(ErrorState(errorMessage: l.error?.message));
+      },
+          (success) {
+        final returned = success.data?.borrow;
+        if (returned == null) {
+          print("returned ID is null");
+
+          emit(
+            ErrorState(errorMessage: 'No returned data found'),
+          );
+          return;
+        }
+        emit(
+          ScanReturnSuccessState(returned: returned),
+        );
+      },
+    );
+  }
+
 
 
 

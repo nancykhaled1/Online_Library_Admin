@@ -77,23 +77,29 @@ class BookCubit extends Cubit<States> {
     String? mainImageFormatted =
     mainImageBase64 != null ? "data:image/png;base64,$mainImageBase64" : null;
 
+    String clean(String text) => text.trim();
+
     final request = AddBookRequest(
-      name: nameController.text,
+      name: clean(nameController.text),
+      writer: clean(writerController.text),
+      synopsis: clean(synopsisController.text),
+      publisher: clean(publisherController.text),
+      language: clean(languageController.text),
+      condition: clean(conditionController.text),
+      edition: clean(editionController.text),
+
       categoryId: selectedCategoryId,
-      condition: conditionController.text,
-      edition: editionController.text,
-      gallery: galleryFormatted,
-      language: languageController.text,
+
+      numberInStock: int.parse(stockController.text.trim()),
+      numberOfCopies: int.parse(copiesController.text.trim()),
+      numPages: int.parse(pagesController.text.trim()),
+      publishYear: int.parse(yearController.text.trim()),
+      weight: int.parse(weightController.text.trim()),
+
       mainImage: mainImageFormatted,
-      numberInStock: int.parse(stockController.text),
-      numberOfCopies: int.parse(copiesController.text),
-      numPages: int.parse(pagesController.text),
-      publisher: publisherController.text,
-      publishYear: int.parse(yearController.text),
-      synopsis: synopsisController.text,
-      weight: int.parse(weightController.text),
-      writer: writerController.text,
+      gallery: galleryFormatted,
     );
+
 
     var either = await bookRepository.addBook(request);
 

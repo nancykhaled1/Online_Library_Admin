@@ -14,6 +14,7 @@ import 'package:online_library_management/Models/Responses/DeleteCategoryRespons
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
 import 'package:online_library_management/Models/Responses/ParentCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/ScanBorrowedResponse.dart';
+import 'package:online_library_management/Models/Responses/ScanReturnResponse.dart';
 
 import '../../Models/Requests/LoginRequest.dart';
 import '../../Models/Requests/UpdateBookRequest.dart';
@@ -1129,12 +1130,12 @@ class ApiManager{
     }
   }
 
-  Future<Either<LoginError, ScanBorrowedResponse>> scanBook(String bookId) async {
+  Future<Either<LoginError, ScanBorrowedResponse>> scanBook(String borrowId) async {
     final connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
-      Uri url = Uri.https(ApiConstants.baseurl, "/api/admin/borrows/scan/$bookId");
+      Uri url = Uri.https(ApiConstants.baseurl, "/api/admin/borrows/scan/$borrowId");
 
 
       final savedToken = await TokenStorage.getToken();
@@ -1186,6 +1187,65 @@ class ApiManager{
       );
     }
   }
+
+  Future<Either<LoginError, ScanReturnResponse>> scanReturn(String borrowId) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl, "/api/admin/borrows/scan/return/$borrowId");
+
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $savedToken",
+
+        },
+      );
+
+
+      print('Mark as read status: ${response.statusCode}');
+      print('Mark as read body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        var scanReturnedResponse = ScanReturnResponse.fromJson(jsonResponse);
+        return right(scanReturnedResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
+          ),
+        ),
+      );
+    }
+  }
+
 
 
 }
