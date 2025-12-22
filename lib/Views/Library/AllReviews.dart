@@ -48,10 +48,7 @@ void showAllReviewsSheet(BuildContext context, String bookId) {
                 ),
                 SizedBox(height: 16.h),
 
-                /// العنوان + زرار Write
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+
                     BlocBuilder<ReviewCubit, States>(
                       builder: (context, state) {
                         int reviewsCount = 0;
@@ -69,38 +66,6 @@ void showAllReviewsSheet(BuildContext context, String bookId) {
                         );
                       },
                     ),
-
-                    /// زرار Write review
-                    if (!isWritingReview)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: MyColors.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 10.h,
-                            horizontal: 16.w,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50.r),
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            isWritingReview = true; // اظهار فورم الريفيو
-                          });
-                        },
-                        child: Row(
-                          children: [Icon(Icons.edit,color: MyColors.whiteColor,),
-                            SizedBox(width: 5.w,),
-                            Text("Write a review",
-                              style: TextStyle(
-                                color: MyColors.whiteColor
-                              ),
-
-                            )],
-                        ),
-                      ),
-                  ],
-                ),
 
                 SizedBox(height: 16.h),
 

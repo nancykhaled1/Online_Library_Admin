@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_library_management/Cubits/States/States.dart';
 import 'package:online_library_management/Models/Responses/UpdateBookResponse.dart';
+import 'package:online_library_management/Views/Library/BooksScreen.dart';
 
 import '../../Cubits/Library/BookViewModel.dart';
 import '../../Models/Responses/BookByIdResponse.dart';
@@ -64,15 +65,15 @@ class _EditBookScreenState extends State<EditBookScreen> {
             showOverlayMessage(context, state.errorMessage!, isError: true);
 
           }
-          else if (state is LoginSuccessState) {
-            showOverlayMessage(context, state.response.data!.message!, isError: false);
+          else if (state is EditBookSuccessState) {
+            showOverlayMessage(context, "Successfully edit", isError: false);
             //context.read<BookCubit>().clearForm();
 
-            // Navigator.of(context).pushReplacement(
-            //   MaterialPageRoute(
-            //     builder: (context) =>  LibraryScreen(),
-            //   ),
-            // );
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) =>  BookScreen(name: state.book.name??'', categoryId: state.book.categoryId??''),
+              ),
+            );
 
           }
         },

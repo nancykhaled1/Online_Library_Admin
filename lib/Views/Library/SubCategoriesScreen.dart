@@ -42,7 +42,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             title: Text(
-              'Novel',
+              '${widget.name}',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 20.sp,
@@ -52,7 +52,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             centerTitle: true,
             leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         LibraryScreen(),

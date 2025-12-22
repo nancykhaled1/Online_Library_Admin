@@ -154,6 +154,8 @@ class _ReturnedScreenState extends State<ReturnedScreen> {
 
                     return Expanded(
                       child: ListView.separated(
+                        reverse: true,
+
                         scrollDirection: Axis.vertical,
                         itemCount: returned.length,
                         separatorBuilder: (_, __) =>

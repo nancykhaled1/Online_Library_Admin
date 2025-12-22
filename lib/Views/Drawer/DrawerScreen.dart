@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
 
 import '../../Utils/MyColors.dart';
+import '../Auth/LoginScreen.dart';
 import '../Borrowed/ReturnedScreen.dart';
+import '../DashBoard/DashBoardScreen.dart';
 import '../Library/LibraryScreen.dart';
 import '../Notification/NotificationScreen.dart';
 
@@ -24,11 +27,11 @@ class AppDrawer extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: 30,
+                  radius: 40,
                   backgroundImage:
                   AssetImage('assets/images/logo.png'),
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +59,26 @@ class AppDrawer extends StatelessWidget {
 
           /// ---------- Items ----------
           _drawerItem(
-            icon: Icons.library_books,
+            icon: SvgPicture.asset('assets/images/bookcase.svg',
+              width: 20.w,
+              height: 20.h,
+              color:  MyColors.blackColor,
+            ),
+            title: "Library",
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => BooksSummaryScreen()),
+              );
+            },
+          ),
+
+          _drawerItem(
+            icon: SvgPicture.asset('assets/images/bookcase.svg',
+    width: 20.w,
+    height: 20.h,
+    color:  MyColors.blackColor,
+    ),
             title: "Library",
             onTap: () {
               Navigator.pushReplacement(
@@ -67,7 +89,11 @@ class AppDrawer extends StatelessWidget {
           ),
 
           _drawerItem(
-            icon: Icons.category,
+            icon:  SvgPicture.asset('assets/images/notification-bing.svg',
+              width: 20.w,
+              height: 20.h,
+              color:  MyColors.blackColor,
+            ),
             title: "Notifications",
             onTap: () {
               Navigator.pushReplacement(
@@ -78,7 +104,7 @@ class AppDrawer extends StatelessWidget {
           ),
 
           _drawerItem(
-            icon: Icons.add_box,
+            icon:  Icon(Icons.open_in_new,color: MyColors.blackColor,),
             title: "Borrowed",
             onTap: () {
               Navigator.pushReplacement(
@@ -90,7 +116,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           _drawerItem(
-            icon: Icons.add_box,
+            icon:  Icon(Icons.assignment_turned_in_outlined,color: MyColors.blackColor,),
             title: "Returned",
             onTap: () {
               Navigator.pushReplacement(
@@ -102,14 +128,20 @@ class AppDrawer extends StatelessWidget {
             },
           ),
 
+          Spacer(),
           Divider(),
 
           _drawerItem(
-            icon: Icons.logout,
+            icon: Icon(Icons.logout,color: Colors.red,),
             title: "Logout",
             color: Colors.red,
             onTap: () {
               // logout logic
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                LoginScreen.routeName,
+                    (route) => false,
+              );
             },
           ),
         ],
@@ -118,13 +150,13 @@ class AppDrawer extends StatelessWidget {
   }
 
   Widget _drawerItem({
-    required IconData icon,
+    required Widget icon,
     required String title,
     Color? color,
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? MyColors.blackColor),
+      leading: icon,
       title: Text(
         title,
         style: TextStyle(

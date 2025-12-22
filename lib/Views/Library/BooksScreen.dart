@@ -46,7 +46,7 @@ class _BookScreenState extends State<BookScreen> {
           elevation: 0,
           scrolledUnderElevation: 0,
           title: Text(
-            'Science',
+            widget.name,
             style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 20.sp,
@@ -56,7 +56,12 @@ class _BookScreenState extends State<BookScreen> {
           centerTitle: true,
           leading: IconButton(
             onPressed: () {
-               Navigator.of(context).pushReplacementNamed(CategoryScreen.routeName);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LibraryScreen(),
+                ),
+              );
+
             },
             icon: Icon(Icons.arrow_back),
           ),
@@ -111,6 +116,8 @@ class _BookScreenState extends State<BookScreen> {
 
             return Expanded(
               child: ListView.separated(
+                reverse: true,
+
                 scrollDirection: Axis.vertical,
                 itemCount: books.length,
                 separatorBuilder: (_, __) =>
@@ -192,6 +199,8 @@ class _BookScreenState extends State<BookScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            context.read<BookCubit>().clearForm(); // ⭐ مهم جدًا
+
             Navigator.of(context).pushReplacement(
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>

@@ -5,6 +5,7 @@ import 'package:online_library_management/Models/Responses/ParentCategoryRespons
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
 
 import '../Models/Requests/CategoryRequest.dart';
+import '../Models/Responses/AllBooksResponse.dart';
 import '../Models/Responses/AllCategoriesResponse.dart';
 import '../Models/Responses/BooksByCategoryIdResponse.dart';
 import '../Models/Responses/CategoryByIdResponse.dart';
@@ -49,5 +50,9 @@ class CategoryRepository {
 
   Future<Either<LoginError, BooksByCategoryIdResponse>> getBookByCategoryId(String categoryId) {
     return remoteDataSource.getBookByCategoryId(categoryId);
+  }
+
+  Future<Either<LoginError, AllBooksResponse>> getAllBooks() {
+    return remoteDataSource.getAllBooks();
   }
 }

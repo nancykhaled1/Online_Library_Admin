@@ -18,7 +18,7 @@ class ApiConstants{
 
 
 
-  static const String getBooksApi = "/api/user/books";
+  static const String getBooksApi = "/api/admin/books";
 
   static const String getBookByIdApi = "/api/user/notification";
 

@@ -8,7 +8,6 @@ import '../../Cubits/States/States.dart';
 import '../../Utils/MyColors.dart';
 import '../../Utils/TextField.dart';
 import '../../Utils/dialog.dart';
-import '../Home/HomeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'login';
@@ -95,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      "You can log into your account first to read many interesting books!",
+                      "You can log into your account first to manage your library!",
                       style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,

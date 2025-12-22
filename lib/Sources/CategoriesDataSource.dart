@@ -3,6 +3,7 @@ import 'package:online_library_management/Models/Requests/ParentCategoryRequest.
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/ParentCategoryResponse.dart';
 import '../Models/Requests/CategoryRequest.dart';
+import '../Models/Responses/AllBooksResponse.dart';
 import '../Models/Responses/AllCategoriesResponse.dart';
 import '../Models/Responses/BooksByCategoryIdResponse.dart';
 import '../Models/Responses/CategoryByIdResponse.dart';
@@ -48,6 +49,8 @@ class CategoryRemoteDataSource {
   Future<Either<LoginError, BooksByCategoryIdResponse>> getBookByCategoryId(String categoryId) {
     return apiManager.getBookByCategoryID(categoryId);
   }
-
+  Future<Either<LoginError, AllBooksResponse>> getAllBooks() {
+    return apiManager.getAllBooks();
+  }
 
 }

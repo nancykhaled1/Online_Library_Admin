@@ -4,6 +4,7 @@ import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/Requests/CategoryRequest.dart';
 import '../../Models/Requests/ParentCategoryRequest.dart';
+import '../../Models/Responses/AllBooksResponse.dart';
 import '../../Models/Responses/AllCategoriesResponse.dart';
 import '../../Models/Responses/CategoryByIdResponse.dart';
 import '../States/States.dart';
@@ -16,6 +17,8 @@ class CategoryCubit extends Cubit<States> {
    // Parents? selectedParent;
    List<Parents> parents = [];
    String? selectedParentId;
+   List<Books> books = [];
+
 
 
    Parents? get selectedParent =>
@@ -94,23 +97,22 @@ class CategoryCubit extends Cubit<States> {
          },
        );
 
-       // 2) Call books only if categories loaded successfully
-       // final booksEither = await repository.getAllBooks();
-       //
-       // List<Books> books = [];
-       // booksEither.fold(
-       //       (l) => emit(ErrorState(errorMessage: l.error?.message)),
-       //       (response) {
-       //     books = response.data?.books ?? [];
-       //   },
-       // );
+      // 2) Call books only if categories loaded successfully
+       final booksEither = await repository.getAllBooks();
+
+       booksEither.fold(
+             (l) => emit(ErrorState(errorMessage: l.error?.message)),
+             (response) {
+           books = response.data?.books ?? [];
+         },
+       );
 
 
        // 3) Final emit — DONE
        emit(HomeDataSuccessState(
            categories,
-          // books,
-           parents
+           parents,
+           books
        ));
 
      } catch (e) {
@@ -172,6 +174,7 @@ class CategoryCubit extends Cubit<States> {
        emit(HomeDataSuccessState(
           updatedCategories,
           current.parents,
+         current.books
        ));
      }
    }

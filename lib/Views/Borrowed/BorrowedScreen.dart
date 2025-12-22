@@ -154,6 +154,8 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
 
                     return Expanded(
                       child: ListView.separated(
+                        reverse: true,
+
                         scrollDirection: Axis.vertical,
                         itemCount: borrow.length,
                         separatorBuilder: (_, __) =>

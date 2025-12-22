@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +11,7 @@ import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
 import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
+import 'package:online_library_management/Views/Splash/SplashScreen.dart';
 import 'Cubits/Auth/LoginScreenViewModel.dart';
 import 'Cubits/Library/ReviewViewModel.dart';
 import 'Repositories/GetNotificationRepository.dart';
@@ -22,7 +22,6 @@ import 'Sources/LoginDataSource.dart';
 import 'Sources/getNotificationDataSource.dart';
 import 'Utils/MyColors.dart';
 import 'Views/Auth/LoginScreen.dart';
-import 'Views/Home/HomeScreen.dart';
 import 'Views/Library/LibraryScreen.dart';
 import 'Views/Library/SubCategoriesScreen.dart';
 
@@ -151,12 +150,13 @@ class MyApp extends StatelessWidget {
 
               ),
 
-              initialRoute: LoginScreen.routeName,
+              initialRoute: splashScreen.routeName,
               routes: {
+                splashScreen.routeName : (context) => splashScreen(),
                  LoginScreen.routeName : (context) => LoginScreen(),
                 LibraryScreen.routeName : (context) => LibraryScreen(),
                 CategoryScreen.routeName : (context) => CategoryScreen(),
-                BorrowedScreen.routeName : (context) => BorrowedScreen()
+                BorrowedScreen.routeName : (context) => BorrowedScreen(),
                 // RegisterScreen.routeName : (context) => RegisterScreen(),
                 // LibraryHomeScreen.routeName : (context) => LibraryHomeScreen(),
                 // MyShelfScreen.routeName : (context) => MyShelfScreen()

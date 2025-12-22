@@ -10,6 +10,7 @@ import 'package:online_library_management/Models/Responses/ScanReturnResponse.da
 
 import '../../Models/Responses/AddBookResponse.dart';
 import '../../Models/Responses/AddNotificationResponse.dart';
+import '../../Models/Responses/AllBooksResponse.dart';
 import '../../Models/Responses/AllCategoriesResponse.dart';
 import '../../Models/Responses/BookByIdResponse.dart';
 import '../../Models/Responses/BookReviewResponse.dart';
@@ -70,9 +71,9 @@ class AddCategorySuccessState extends States {
 class HomeDataSuccessState extends States {
   final List<Categories> categories;
   final List<Parents> parents;
-  //final List<Books> books;
+  final List<Books> books;
 
-  HomeDataSuccessState(this.categories,  this.parents);
+  HomeDataSuccessState(this.categories,  this.parents , this.books);
 }
 
 class CategoryByIdSuccessState extends States {
