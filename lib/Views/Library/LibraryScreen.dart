@@ -192,28 +192,37 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       final error = state.errorMessage;
 
                       if (error == "No Internet Connection") {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Center(
-                              child: SvgPicture.asset(
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
                                 "assets/images/noconnection.svg", // 🖼️ ضيفي صورة عندك
                                 width: 200,
                                 height: 200,
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "No internet connection",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: MyColors.greyColor,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "Noto Kufi Arabic",
+                              const SizedBox(height: 20),
+                              Text(
+                                "No internet connection",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: MyColors.greyColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Noto Kufi Arabic",
+                                ),
                               ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Center(
+                          child: Text(
+                            "Please, Try again later",
+                            style: TextStyle(
+                              color: MyColors.greyColor,
+                              fontSize: 16.sp,
                             ),
-                          ],
+                          ),
                         );
                       }
 

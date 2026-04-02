@@ -11,6 +11,9 @@ class BorrowCubit extends Cubit<States> {
 
   List<BorrowedBooks> borrowedBook = [];
   List<ReturnedBooks> returnedBook = [];
+  List<PendingBooks> pendingBook = [];
+  List<LateBooks> lateBook = [];
+
 
 
   Future<void> getBorrowBooks() async {
@@ -24,7 +27,10 @@ class BorrowCubit extends Cubit<States> {
             (success) {
           borrowedBook = success.data?.borrowedBooks ??[];
           returnedBook = success.data?.returnedBooks ??[];
-          emit(GetBorrowBooksSuccessState(borrow: borrowedBook, returned: returnedBook));
+          lateBook = success.data?.lateBooks ??[];
+          pendingBook = success.data?.pendingBooks ??[];
+
+          emit(GetBorrowBooksSuccessState(borrow: borrowedBook, returned: returnedBook, pending: pendingBook, late: lateBook));
         }
     );
   }

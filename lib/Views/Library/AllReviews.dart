@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 
 import '../../Cubits/Library/ReviewViewModel.dart';
 import '../../Cubits/States/States.dart';
+import '../../Utils/CommenConfirmSheet.dart';
 import '../../Utils/MyColors.dart';
-
 
 void showAllReviewsSheet(BuildContext context, String bookId) {
   bool isWritingReview = false;
@@ -48,318 +48,363 @@ void showAllReviewsSheet(BuildContext context, String bookId) {
                 ),
                 SizedBox(height: 16.h),
 
+                BlocBuilder<ReviewCubit, States>(
+                  builder: (context, state) {
+                    int reviewsCount = 0;
 
-                    BlocBuilder<ReviewCubit, States>(
-                      builder: (context, state) {
-                        int reviewsCount = 0;
-
-                        if (state is GetReviewSuccessState) {
-                          reviewsCount = state.review.length;
-                        }
-                        return Text(
-                          isWritingReview ? "Write a Review" : "Review ($reviewsCount)",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w700,
-                            color: MyColors.blackColor,
-                          ),
-                        );
-                      },
-                    ),
+                    if (state is GetReviewSuccessState) {
+                      reviewsCount = state.review.length;
+                    }
+                    return Text(
+                      "Review ($reviewsCount)",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: MyColors.blackColor,
+                      ),
+                    );
+                  },
+                ),
 
                 SizedBox(height: 16.h),
 
+                BlocBuilder<ReviewCubit, States>(
+                  builder: (context, state) {
+                    if (state is LoadingState) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is ErrorState) {
+                      final error = state.errorMessage;
 
-                  BlocBuilder<ReviewCubit, States>(
-                    builder: (context, state) {
-                      if (state is LoadingState) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-
-                      else if (state is ErrorState) {
-                        final error = state.errorMessage;
-
-                        if (error == "No Internet Connection") {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/images/noconnection.svg", // 🖼️ ضيفي صورة عندك
-                                width: 200,
-                                height: 200,
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                "No internet connection",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: MyColors.greyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Noto Kufi Arabic",
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Center(
-                            child: Text(
-                              "Please, Try again later",
-                              style: TextStyle(
-                                color: MyColors.greyColor,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                          );
-                        }
-
-                      }
-
-                      if (state is GetReviewSuccessState) {
-                        final reviews = state
-                            .review; // الريفيوهات الجاية من الـ API
-                        if (reviews.isEmpty) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: 20.h),
-                            child: Center(
-                              child: Text(
-                                "No reviews yet",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                        double overallScore = 0;
-                        if (reviews.isNotEmpty) {
-                          double total = 0;
-                          for (var review in reviews) {
-                            // حول أي نوع لـ String أولًا
-                            final ratingStr = review.rating?.toString() ?? "0";
-                            total += double.tryParse(ratingStr) ?? 0;
-                          }
-                          overallScore = total / reviews.length;
-                        }
-
-
+                      if (error == "No Internet Connection") {
                         return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              width: double.infinity,
-                              height: 70.h,
-                              decoration: BoxDecoration(
-                                color: MyColors.dividerColor,
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(color: MyColors.outColor),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                          'assets/images/star.svg'),
-                                      SizedBox(width: 4.w,),
-                                      Text(
-                                        overallScore.toStringAsFixed(1),  // ← رقم بعشري واحد
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w700,
-                                          color: MyColors.blackColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "Overal score",
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: MyColors.greyColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            SvgPicture.asset(
+                              "assets/images/noconnection.svg", // 🖼️ ضيفي صورة عندك
+                              width: 200,
+                              height: 200,
                             ),
-                            SizedBox(height: 20.h),
-
-                            SizedBox(
-                              height: 300.h, // some fixed or relative height
-
-                              child: ListView.separated(
-                                itemCount: reviews.length,
-                                separatorBuilder:
-                                    (_, __) =>
-                                    Divider(
-                                      color: MyColors.outColor,
-                                      thickness: 1,
-                                      indent: 16.w,
-                                      endIndent: 16.w,
-                                      height: 16.h,
-                                    ),
-                                itemBuilder: (context, index) {
-                                  final review = reviews[index];
-
-                                  final parsedDate =
-                                  DateTime.parse(review.createdAt!).toLocal();
-                                  final formattedDate = DateFormat(
-                                    'dd/MM/yyyy',
-                                  ).format(parsedDate);
-
-                                  final formattedTime = DateFormat(
-                                    'HH:mm',
-                                  ).format(parsedDate);
-                                  String? imageUrl = review.userId?.photo;
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 15.r,
-                                              backgroundColor: MyColors.whiteColor,
-                                              child: ClipOval(
-                                                child: (review.userId?.photo != null && review.userId!.photo!.startsWith("http"))
-                                                    ? Image.network(
-                                                  review.userId!.photo!,
-                                                  key: UniqueKey(),
-                                                  fit: BoxFit.cover,
-                                                  width: 100.w,
-                                                  height: 100.h,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Image.asset(
-                                                      'assets/images/personalImage.png',
-                                                      fit: BoxFit.cover,
-                                                      width: 100.w,
-                                                      height: 100.h,
-                                                    );
-                                                  },
-                                                )
-                                                    : Image.asset(
-                                                  'assets/images/personalImage.png',
-                                                  fit: BoxFit.cover,
-                                                  width: 100.w,
-                                                  height: 100.h,
-                                                ),
-                                              ),
-                                            ),
-
-                                            // CircleAvatar(
-                                            //   radius: 15.r,
-                                            //   backgroundColor: MyColors.whiteColor,
-                                            //   child: ClipOval(
-                                            //     child: (imageUrl != null && imageUrl!.startsWith("http"))
-                                            //         ? Image.network(
-                                            //       "$imageUrl?v=${DateTime.now().millisecondsSinceEpoch}",
-                                            //       key: UniqueKey(),
-                                            //       fit: BoxFit.cover,
-                                            //       width: 100.w,
-                                            //       height: 100.h,
-                                            //       errorBuilder: (context, error, stackTrace) =>
-                                            //           Image.asset(
-                                            //             'assets/images/personalImage.png',
-                                            //             fit: BoxFit.cover,
-                                            //             width: 100.w,
-                                            //             height: 100.h,
-                                            //           ),
-                                            //     )
-                                            //         : Image.asset(
-                                            //       'assets/images/personalImage.png',
-                                            //       fit: BoxFit.cover,
-                                            //       width: 100.w,
-                                            //       height: 100.h,
-                                            //     ),
-                                            //   ),
-                                            // ),
-                                            SizedBox(width: 10.w,),
-                                            Text(
-                                              review.userId?.name ??'Anonymous',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14.sp,
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 5.h,
-                                                horizontal: 7.w,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(50.r),
-                                                border: Border.all(
-                                                  color: MyColors.outColor,
-                                                ),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    'assets/images/star.svg',
-                                                  ),
-                                                  Text(
-                                                    "${review.rating}/5",
-                                                    style: TextStyle(
-                                                      fontSize: 12.sp,
-                                                      fontWeight: FontWeight
-                                                          .w700,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 6.h),
-                                        Text(
-                                          review.comment??'no comment',
-                                          style: TextStyle(
-                                            fontSize: 13.sp,
-                                            color: Colors.grey.shade700,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              formattedDate,
-                                              style: TextStyle(
-                                                fontSize: 12.sp,
-                                                color: Colors.grey.shade500,
-                                              ),
-                                            ),
-                                            Text(
-                                              formattedTime,
-                                              style: TextStyle(
-                                                fontSize: 12.sp,
-                                                color: Colors.grey.shade500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-                                  );
-                                },
+                            const SizedBox(height: 20),
+                            Text(
+                              "No internet connection",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: MyColors.greyColor,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Noto Kufi Arabic",
                               ),
                             ),
                           ],
                         );
+                      } else {
+                        return Center(
+                          child: Text(
+                            "Please, Try again later",
+                            style: TextStyle(
+                              color: MyColors.greyColor,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        );
                       }
-                      return Container(); // default
+                    }
 
-                    },
+                    if (state is GetReviewSuccessState) {
+                      final reviews =
+                          state.review; // الريفيوهات الجاية من الـ API
+                      if (reviews.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: 20.h),
+                          child: Center(
+                            child: Text(
+                              "No reviews yet",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      double overallScore = 0;
+                      if (reviews.isNotEmpty) {
+                        double total = 0;
+                        for (var review in reviews) {
+                          // حول أي نوع لـ String أولًا
+                          final ratingStr = review.rating?.toString() ?? "0";
+                          total += double.tryParse(ratingStr) ?? 0;
+                        }
+                        overallScore = total / reviews.length;
+                      }
 
-                  ),
+                      return Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 70.h,
+                            decoration: BoxDecoration(
+                              color: MyColors.dividerColor,
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(color: MyColors.outColor),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset('assets/images/star.svg'),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      overallScore.toStringAsFixed(
+                                        1,
+                                      ), // ← رقم بعشري واحد
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: MyColors.blackColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "Overal score",
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color: MyColors.greyColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
 
+                          SizedBox(
+                            height: 300.h, // some fixed or relative height
+
+                            child: ListView.separated(
+                              itemCount: reviews.length,
+                              separatorBuilder:
+                                  (_, __) => Divider(
+                                    color: MyColors.outColor,
+                                    thickness: 1,
+                                    indent: 16.w,
+                                    endIndent: 16.w,
+                                    height: 16.h,
+                                  ),
+                              itemBuilder: (context, index) {
+                                final review = reviews[index];
+
+                                final parsedDate =
+                                    DateTime.parse(review.createdAt!).toLocal();
+                                final formattedDate = DateFormat(
+                                  'dd/MM/yyyy',
+                                ).format(parsedDate);
+
+                                final formattedTime = DateFormat(
+                                  'HH:mm',
+                                ).format(parsedDate);
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 15.r,
+                                            backgroundColor:
+                                                MyColors.whiteColor,
+                                            child: ClipOval(
+                                              child:
+                                                  (review.userId?.photo !=
+                                                              null &&
+                                                          review.userId!.photo!
+                                                              .startsWith(
+                                                                "http",
+                                                              ))
+                                                      ? Image.network(
+                                                        review.userId!.photo!,
+                                                        key: UniqueKey(),
+                                                        fit: BoxFit.cover,
+                                                        width: 100.w,
+                                                        height: 100.h,
+                                                        errorBuilder: (
+                                                          context,
+                                                          error,
+                                                          stackTrace,
+                                                        ) {
+                                                          return Image.asset(
+                                                            'assets/images/personalImage.png',
+                                                            fit: BoxFit.cover,
+                                                            width: 100.w,
+                                                            height: 100.h,
+                                                          );
+                                                        },
+                                                      )
+                                                      : Image.asset(
+                                                        'assets/images/personalImage.png',
+                                                        fit: BoxFit.cover,
+                                                        width: 100.w,
+                                                        height: 100.h,
+                                                      ),
+                                            ),
+                                          ),
+
+                                          // CircleAvatar(
+                                          //   radius: 15.r,
+                                          //   backgroundColor: MyColors.whiteColor,
+                                          //   child: ClipOval(
+                                          //     child: (imageUrl != null && imageUrl!.startsWith("http"))
+                                          //         ? Image.network(
+                                          //       "$imageUrl?v=${DateTime.now().millisecondsSinceEpoch}",
+                                          //       key: UniqueKey(),
+                                          //       fit: BoxFit.cover,
+                                          //       width: 100.w,
+                                          //       height: 100.h,
+                                          //       errorBuilder: (context, error, stackTrace) =>
+                                          //           Image.asset(
+                                          //             'assets/images/personalImage.png',
+                                          //             fit: BoxFit.cover,
+                                          //             width: 100.w,
+                                          //             height: 100.h,
+                                          //           ),
+                                          //     )
+                                          //         : Image.asset(
+                                          //       'assets/images/personalImage.png',
+                                          //       fit: BoxFit.cover,
+                                          //       width: 100.w,
+                                          //       height: 100.h,
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                          SizedBox(width: 10.w),
+                                          Text(
+                                            review.userId?.name ?? 'Anonymous',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 5.h,
+                                              horizontal: 7.w,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(50.r),
+                                              border: Border.all(
+                                                color: MyColors.outColor,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/star.svg',
+                                                ),
+                                                Text(
+                                                  "${review.rating}/5",
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 6.h),
+                                      Text(
+                                        review.comment ?? 'no comment',
+                                        style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: Colors.grey.shade700,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            formattedDate,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                          ),
+                                          Text(
+                                            formattedTime,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 6.h),
+
+                                      GestureDetector(
+                                        onTap: () {
+                                          showCommonBottomSheet(
+                                            context: context,
+                                            imagePath:
+                                                'assets/images/deleteImage.png',
+                                            title: 'Delete this review?',
+                                            description:
+                                                'You sure you want to delete this review!',
+                                            primaryButtonText: 'Yes, Delete',
+                                            onPrimaryPressed: () async {
+                                              Navigator.pop(
+                                                context,
+                                              ); // اقفل الشيت
+
+                                              context
+                                                  .read<ReviewCubit>()
+                                                  .deleteReview(
+                                                    review.id ?? '',
+                                                  );
+                                            },
+                                            secondaryButtonText: 'No, Cancel',
+                                            onSecondaryPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(width: 4.w),
+                                            Text(
+                                              'delete review',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    return Container(); // default
+                  },
+                ),
               ],
             ),
           );

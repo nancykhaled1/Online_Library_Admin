@@ -4,6 +4,7 @@ import 'package:online_library_management/Views/Auth/LoginScreen.dart';
 import 'package:online_library_management/Views/Library/LibraryScreen.dart';
 import '../../Services/Local/SharedPreference.dart';
 import '../../Utils/MyColors.dart';
+import '../DashBoard/DashBoardScreen.dart';
 
 
 class splashScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _splashScreenState extends State<splashScreen>
     if (token != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => LibraryScreen()),
+        MaterialPageRoute(builder: (_) => DashBoardScreen()),
       );
     } else {
       Navigator.pushReplacement(

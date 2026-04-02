@@ -19,29 +19,23 @@ class LoginScreenCubit extends Cubit<States> {
   bool isPasswordVisible = true;
 
   Future<void> login() async {
-
       emit(LoadingState(loadingMessage: "Loading..."));
-
       final request = LoginRequest(
         email: emailController.text,
         password: passwordController.text,
       );
-
       Either<LoginError, LoginResponse> response =
       await repository.login(request);
-
       response.fold(
             (error) {
           emit(ErrorState(errorMessage: error.error!.message));
         },
             (data) async {
-
           //تخزين التوكن
           final token = data.data?.token;
           await TokenStorage.saveToken(token!);
           final savedToken = await TokenStorage.getToken();
           print("Saved token locally: $savedToken");
-
 
           //تخزين ال id
           final userId = data.data?.id;

@@ -3,6 +3,7 @@ import 'package:online_library_management/Models/Requests/AddBookRequest.dart';
 import 'package:online_library_management/Models/Requests/UpdateBookRequest.dart';
 import 'package:online_library_management/Models/Responses/AddBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
+import 'package:online_library_management/Models/Responses/DeleteReviewResponse.dart';
 import 'package:online_library_management/Models/Responses/UpdateBookResponse.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 
@@ -34,6 +35,10 @@ class AddBookRepository {
 
   Future<Either<LoginError, BookReviewResponse>> getBookReview(String bookId) {
     return remoteDataSource.getBookReview(bookId);
+  }
+
+  Future<Either<LoginError, DeleteReviewResponse>> deleteReview(String reviewId) {
+    return remoteDataSource.deleteReview(reviewId);
   }
 
 }

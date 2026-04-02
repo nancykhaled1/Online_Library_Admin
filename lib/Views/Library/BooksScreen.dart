@@ -116,14 +116,13 @@ class _BookScreenState extends State<BookScreen> {
 
             return Expanded(
               child: ListView.separated(
-                reverse: true,
-
                 scrollDirection: Axis.vertical,
                 itemCount: books.length,
                 separatorBuilder: (_, __) =>
                     SizedBox(height: 10.h),
                 itemBuilder: (context, index) {
                   final book = books[index];
+                  final imageUrl = book.mainImage ?? '';
                   return GestureDetector(
                     onTap: () {
                       Navigator.of(context).pushReplacement(
@@ -150,7 +149,7 @@ class _BookScreenState extends State<BookScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                book.name ??'',
+                                book.name ??'no name',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -161,7 +160,7 @@ class _BookScreenState extends State<BookScreen> {
                               ),
                               SizedBox(height: 4.h),
                               Text(
-                                book.publisher ??'',
+                                book.publisher ??'no publisher',
                                 style: TextStyle(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
@@ -173,13 +172,27 @@ class _BookScreenState extends State<BookScreen> {
                           ClipRRect(
                             borderRadius:
                             BorderRadius.circular(12.r),
-                            child:  Image.network(book.mainImage ??'assets/images/book.png',
+                            child: imageUrl != null && imageUrl.isNotEmpty
+                                ? Image.network(
+                              imageUrl,
                               height: 50.h,
                               width: 50.w,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset("assets/images/img.png", height: 50.h,);
+                              errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return _buildImagePlaceholder();
                               },
-                            ),
+                            )
+                                : _buildImagePlaceholder(),
+
+
+                            // Image.network(book.mainImage ??'assets/images/book.png',
+                            //   height: 50.h,
+                            //   width: 50.w,
+                            //   errorBuilder: (context, error, stackTrace) {
+                            //     return Image.asset("assets/images/img.png", height: 50.h,);
+                            //   },
+                            // ),
                           ),
                         ],
                       ),
@@ -217,6 +230,24 @@ class _BookScreenState extends State<BookScreen> {
         ),
 
       )),
+    );
+  }
+  Widget _buildImagePlaceholder() {
+    return Container(
+      width: 50.w,
+      height: 50.h,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      child: Icon(
+        Icons.image_not_supported,
+        size: 40,
+        color: Colors.grey[500],
+      ),
     );
   }
 }

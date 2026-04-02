@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
-
+import 'package:online_library_management/Views/Borrowed/Late&PendingScreen.dart';
 import '../../Utils/MyColors.dart';
 import '../Auth/LoginScreen.dart';
 import '../Borrowed/ReturnedScreen.dart';
@@ -59,19 +59,16 @@ class AppDrawer extends StatelessWidget {
 
           /// ---------- Items ----------
           _drawerItem(
-            icon: SvgPicture.asset('assets/images/bookcase.svg',
-              width: 20.w,
-              height: 20.h,
-              color:  MyColors.blackColor,
-            ),
-            title: "Library",
+            icon: Icon(Icons.dashboard_customize_outlined,color: MyColors.blackColor,),
+            title: "Dashboard",
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => BooksSummaryScreen()),
+                MaterialPageRoute(builder: (_) => DashBoardScreen()),
               );
             },
           ),
+
 
           _drawerItem(
             icon: SvgPicture.asset('assets/images/bookcase.svg',
@@ -81,7 +78,7 @@ class AppDrawer extends StatelessWidget {
     ),
             title: "Library",
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => LibraryScreen()),
               );
@@ -96,7 +93,7 @@ class AppDrawer extends StatelessWidget {
             ),
             title: "Notifications",
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => NotificationScreen()),
               );
@@ -107,7 +104,7 @@ class AppDrawer extends StatelessWidget {
             icon:  Icon(Icons.open_in_new,color: MyColors.blackColor,),
             title: "Borrowed",
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => BorrowedScreen(),
@@ -119,11 +116,21 @@ class AppDrawer extends StatelessWidget {
             icon:  Icon(Icons.assignment_turned_in_outlined,color: MyColors.blackColor,),
             title: "Returned",
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => ReturnedScreen(),
                 ),
+              );
+            },
+          ),
+          _drawerItem(
+            icon: Icon(Icons.error_outline_outlined,color: MyColors.blackColor,),
+            title: "Late & Pending",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => LatePendingScreen()),
               );
             },
           ),

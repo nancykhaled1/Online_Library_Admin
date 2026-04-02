@@ -69,7 +69,7 @@ class _EditBookScreenState extends State<EditBookScreen> {
             showOverlayMessage(context, "Successfully edit", isError: false);
             //context.read<BookCubit>().clearForm();
 
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>  BookScreen(name: state.book.name??'', categoryId: state.book.categoryId??''),
               ),

@@ -146,6 +146,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                       controller: _pageController,
                       itemCount: images.length,
                       itemBuilder: (context, index) {
+                        final imageUrl = images[index];
                         return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12.r),
@@ -153,16 +154,29 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12.r),
-                            child: Image.network(
-                              images[index],
-                             // fit: BoxFit.cover,
-                              height: 250.h,
-                            ),
+                             child: imageUrl != null && imageUrl.isNotEmpty
+                                 ? Image.network(
+                               imageUrl,
+                               height: 250.h,
+                              // width: 70.w,
+                               errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
+                               loadingBuilder: (context, child, loadingProgress) {
+                                 if (loadingProgress == null) return child;
+                                 return _buildImagePlaceholder();
+                               },
+                             )
+                                 : _buildImagePlaceholder(),
+                        //Image.network(
+                            //   images[index],
+                            //  // fit: BoxFit.cover,
+                            //   height: 250.h,
+                            // ),
                           ),
                         );
                       },
                     ),
                   ),
+                        SizedBox(height: 4.h),
 
 // Indicator
                     if (images.length > 1) // لو فيه أكثر من صورة بس
@@ -363,7 +377,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                 );
                               }
                               final itemCount = min(2, reviews.length);
-                              final itemHeight = 80.h;
+                              final itemHeight = 100.h;
                               return SizedBox(
                                 height: itemHeight * itemCount + (itemCount - 1) * 10.h, // 16.h هي المسافة بين العناصر
                                 child: ListView.separated(
@@ -487,6 +501,52 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                 ),
                                               ),
                                             ],
+                                          ),
+
+                                          SizedBox(height: 6.h),
+
+                                          GestureDetector(
+                                            onTap: () {
+                                              showCommonBottomSheet(
+                                                context: context,
+                                                imagePath:
+                                                'assets/images/deleteImage.png',
+                                                title: 'Delete this review?',
+                                                description:
+                                                'You sure you want to delete this review!',
+                                                primaryButtonText: 'Yes, Delete',
+                                                onPrimaryPressed: () async {
+                                                  Navigator.pop(
+                                                    context,
+                                                  ); // اقفل الشيت
+
+                                                  context
+                                                      .read<ReviewCubit>()
+                                                      .deleteReview(
+                                                    review.id ?? '',
+                                                  );
+                                                },
+                                                secondaryButtonText: 'No, Cancel',
+                                                onSecondaryPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              );
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                Text(
+                                                  'delete review',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -689,140 +749,6 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                     ),
                   ),
                 ),
-                // bottomNavigationBar: Padding(
-                //   padding: EdgeInsets.all(16.r),
-                //   child: Column(
-                //     children: [
-                //       /// button
-                //       ElevatedButton(
-                //         onPressed: (){
-                //           Navigator.of(context).pushReplacement(
-                //             PageRouteBuilder(
-                //               pageBuilder:
-                //                   (context, animation, secondaryAnimation) =>
-                //                   EditBookScreen(book: book,),
-                //               transitionDuration: Duration.zero,
-                //               reverseTransitionDuration: Duration.zero,
-                //             ),
-                //           );
-                //         },
-                //         style: ElevatedButton.styleFrom(
-                //           backgroundColor: MyColors.primaryColor,
-                //           padding: EdgeInsets.symmetric(
-                //             vertical: 12.h,
-                //             horizontal: 16.w,
-                //           ),
-                //           shape: RoundedRectangleBorder(
-                //             borderRadius: BorderRadius.circular(50.r),
-                //           ),
-                //         ),
-                //         child:
-                //         // state is LoadingState
-                //         //     ? SizedBox(
-                //         //   width: 20.w,
-                //         //   height: 20.w,
-                //         //   child: Row(
-                //         //     mainAxisAlignment: MainAxisAlignment.center,
-                //         //     children: [
-                //         //       CircularProgressIndicator(
-                //         //         strokeWidth: 2,
-                //         //         valueColor:
-                //         //         AlwaysStoppedAnimation<Color>(
-                //         //           MyColors.whiteColor,
-                //         //         ),
-                //         //       ),
-                //         //     ],
-                //         //   ),
-                //         // )
-                //         //     :
-                //         Row(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           children: [
-                //             Icon(Icons.edit,color: MyColors.whiteColor ,size: 20.sp,),
-                //             SizedBox(width: 5.w,),
-                //             Text(
-                //               "Edit",
-                //               style: TextStyle(
-                //                 fontSize: 16.sp,
-                //                 color: MyColors.whiteColor,
-                //                 fontWeight: FontWeight.w500,
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //
-                //       ),
-                //       SizedBox(height: 20.h),
-                //       ElevatedButton(
-                //         onPressed: (){
-                //
-                //           showCommonBottomSheet(
-                //             context: context,
-                //             imagePath: 'assets/images/deleteImage.png',
-                //             title: 'Delete this category?',
-                //             description:
-                //             'You sure you want to delete this category!',
-                //             primaryButtonText: 'Yes, Delete',
-                //             onPrimaryPressed: () async {
-                //               Navigator.pop(context); // اقفل الشيت
-                //
-                //               context.read<BookCubit>().deleteBook(book.id!);
-                //             },
-                //             secondaryButtonText: 'No, Cancel',
-                //             onSecondaryPressed: () {
-                //               Navigator.pop(context);
-                //             },
-                //           );
-                //         },
-                //         style: ElevatedButton.styleFrom(
-                //           backgroundColor: Colors.red[100],
-                //           padding: EdgeInsets.symmetric(
-                //             vertical: 12.h,
-                //             horizontal: 16.w,
-                //           ),
-                //           shape: RoundedRectangleBorder(
-                //             borderRadius: BorderRadius.circular(50.r),
-                //           ),
-                //         ),
-                //         child:
-                //         // state is LoadingState
-                //         //     ? SizedBox(
-                //         //   width: 20.w,
-                //         //   height: 20.w,
-                //         //   child: Row(
-                //         //     mainAxisAlignment: MainAxisAlignment.center,
-                //         //     children: [
-                //         //       CircularProgressIndicator(
-                //         //         strokeWidth: 2,
-                //         //         valueColor:
-                //         //         AlwaysStoppedAnimation<Color>(
-                //         //           MyColors.whiteColor,
-                //         //         ),
-                //         //       ),
-                //         //     ],
-                //         //   ),
-                //         // )
-                //         //     :
-                //         Row(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           children: [
-                //             Icon(Icons.delete,color: Colors.red ,size: 20.sp,),
-                //             SizedBox(width: 5.w,),
-                //             Text(
-                //               "Delete",
-                //               style: TextStyle(
-                //                 fontSize: 16.sp,
-                //                 color: Colors.red,
-                //                 fontWeight: FontWeight.w500,
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //
-                //       ),
-                //     ],
-                //   ),
-                // ),
               ),
             );
           }
@@ -882,6 +808,25 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
       radius: 22,
       backgroundImage: NetworkImage(url),
       onBackgroundImageError: (_, __) {},
+    );
+  }
+
+  Widget _buildImagePlaceholder() {
+    return Container(
+     // width: 70.w,
+      height: 250.h,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      child: Icon(
+        Icons.image_not_supported,
+        size: 40,
+        color: Colors.grey[500],
+      ),
     );
   }
 

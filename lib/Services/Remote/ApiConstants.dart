@@ -12,12 +12,6 @@ class ApiConstants{
 
   static const String borrowApi = "/api/admin/borrows";
 
-
-
-
-
-
-
   static const String getBooksApi = "/api/admin/books";
 
   static const String getBookByIdApi = "/api/user/notification";
@@ -27,12 +21,6 @@ class ApiConstants{
   static const String saveBookApi = "/api/user/favorite-books";
 
   static const String getSaveBookApi = "/api/user/favorite-books";
-
-
-
-
-
-
 
   static const String counterApi = "/api/user/notification/unread-count";
 

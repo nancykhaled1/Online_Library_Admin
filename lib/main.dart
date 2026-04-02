@@ -11,6 +11,7 @@ import 'package:online_library_management/Repositories/CategoryRepository.dart';
 import 'package:online_library_management/Sources/BookDataSource.dart';
 import 'package:online_library_management/Sources/CategoriesDataSource.dart';
 import 'package:online_library_management/Views/Borrowed/BorrowedScreen.dart';
+import 'package:online_library_management/Views/Borrowed/ReturnedScreen.dart';
 import 'package:online_library_management/Views/Splash/SplashScreen.dart';
 import 'Cubits/Auth/LoginScreenViewModel.dart';
 import 'Cubits/Library/ReviewViewModel.dart';
@@ -129,8 +130,6 @@ Future<void> main() async {
 
 
 
-
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -157,6 +156,7 @@ class MyApp extends StatelessWidget {
                 LibraryScreen.routeName : (context) => LibraryScreen(),
                 CategoryScreen.routeName : (context) => CategoryScreen(),
                 BorrowedScreen.routeName : (context) => BorrowedScreen(),
+                ReturnedScreen.routeName : (context) => ReturnedScreen()
                 // RegisterScreen.routeName : (context) => RegisterScreen(),
                 // LibraryHomeScreen.routeName : (context) => LibraryHomeScreen(),
                 // MyShelfScreen.routeName : (context) => MyShelfScreen()

@@ -31,6 +31,21 @@ class ReviewCubit extends Cubit<States> {
     );
   }
 
+  Future<void> deleteReview(String reviewId) async {
+    emit(LoadingState(loadingMessage: 'Loading...'));
+
+    final either = await repository.deleteReview(reviewId);
+
+    await either.fold(
+          (failure) {
+        emit(ErrorState(errorMessage: failure.error?.message ?? "try again later!"));
+      },
+          (response) async {
+        emit(DeleteReviewSuccessState(response: response));
+
+      },
+    );
+  }
 
 
 

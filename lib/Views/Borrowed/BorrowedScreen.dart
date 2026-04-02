@@ -95,25 +95,27 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                     final error = state.errorMessage;
 
                     if (error == "No Internet Connection") {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/images/noconnection.svg", // 🖼️ ضيفي صورة عندك
-                            width: 200,
-                            height: 200,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "No internet connection",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: MyColors.greyColor,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Noto Kufi Arabic",
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/images/noconnection.svg", // 🖼️ ضيفي صورة عندك
+                              width: 200,
+                              height: 200,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 20),
+                            Text(
+                              "No internet connection",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: MyColors.greyColor,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Noto Kufi Arabic",
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     } else {
                       return Center(
@@ -154,14 +156,14 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
 
                     return Expanded(
                       child: ListView.separated(
-                        reverse: true,
-
                         scrollDirection: Axis.vertical,
                         itemCount: borrow.length,
                         separatorBuilder: (_, __) =>
                             SizedBox(height: 10.h),
                         itemBuilder: (context, index) {
                           final borrowed = borrow[index];
+                          final imageUrl = borrowed.book?.mainImage ??'';
+
                           return Container(
                             padding: EdgeInsets.all(10.r),
                             decoration: BoxDecoration(
@@ -185,39 +187,18 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                         color: MyColors.outColor,
                                       ),
                                     ),
-                                    child: Image.network(
-                                      borrowed.book?.mainImage ?? '',
+                                    child: imageUrl != null && imageUrl.isNotEmpty
+                                        ? Image.network(
+                                      imageUrl,
                                       height: 100.h,
                                       width: 70.w,
-                                    //  fit: BoxFit.cover,
-
-                                      // 🔄 Loader أثناء التحميل
+                                      errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
                                       loadingBuilder: (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child; // الصورة اتحملت
-                                        }
-                                        return SizedBox(
-                                          height: 100.h,
-                                          width: 70.w,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              color: MyColors.primaryColor,
-                                            ),
-                                          ),
-                                        );
+                                        if (loadingProgress == null) return child;
+                                        return _buildImagePlaceholder();
                                       },
-
-                                      // ❌ في حالة الخطأ
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Image.asset(
-                                          "assets/images/img.png",
-                                          height: 100.h,
-                                          width: 70.w,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    ),
+                                    )
+                                        : _buildImagePlaceholder(),
                                   ),
                                 ),
                                 SizedBox(width: 10.w,),
@@ -257,7 +238,7 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('Returned in',
+                                        Text('Returned date',
                                           style: TextStyle(
                                               color: MyColors.greyColor,
                                               fontSize: 12.sp
@@ -285,38 +266,51 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
 
                                           color: MyColors.softColor
                                       ),
-                                      child: Row(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          CircleAvatar(
-                                            radius: 10.r,
-                                            backgroundColor: MyColors.whiteColor,
-                                            child: ClipOval(
-                                              child: (borrowed.user?.photo != null && borrowed.user!.photo!.startsWith("http"))
-                                                  ? Image.network(
-                                                borrowed.user!.photo!,
-                                                key: UniqueKey(),
-                                                fit: BoxFit.cover,
-                                                width: 100.w,
-                                                height: 100.h,
-                                                errorBuilder: (context, error, stackTrace) {
-                                                  return Image.asset(
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 10.r,
+                                                backgroundColor: MyColors.whiteColor,
+                                                child: ClipOval(
+                                                  child: (borrowed.user?.photo != null && borrowed.user!.photo!.startsWith("http"))
+                                                      ? Image.network(
+                                                    borrowed.user!.photo!,
+                                                    key: UniqueKey(),
+                                                    fit: BoxFit.cover,
+                                                    width: 100.w,
+                                                    height: 100.h,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Image.asset(
+                                                        'assets/images/personalImage.png',
+                                                        fit: BoxFit.cover,
+                                                        width: 100.w,
+                                                        height: 100.h,
+                                                      );
+                                                    },
+                                                  )
+                                                      : Image.asset(
                                                     'assets/images/personalImage.png',
                                                     fit: BoxFit.cover,
                                                     width: 100.w,
                                                     height: 100.h,
-                                                  );
-                                                },
-                                              )
-                                                  : Image.asset(
-                                                'assets/images/personalImage.png',
-                                                fit: BoxFit.cover,
-                                                width: 100.w,
-                                                height: 100.h,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              SizedBox(width: 5.w,),
+                                              Text(borrowed.user?.name ??'',
+                                                style: TextStyle(
+                                                    color: MyColors.blackColor,
+                                                    fontSize: 12.sp
+                                                ),
+                                              ),
+
+                                            ],
                                           ),
-                                          SizedBox(width: 5.w,),
-                                          Text(borrowed.user?.name ??'',
+                                          SizedBox(height: 5.h,),
+                                          Text(borrowed.user?.phone ??'',
                                             style: TextStyle(
                                                 color: MyColors.blackColor,
                                                 fontSize: 12.sp
@@ -351,4 +345,23 @@ class _BorrowedScreenState extends State<BorrowedScreen> {
       )),
     );
   }
+  Widget _buildImagePlaceholder() {
+    return Container(
+      width: 70.w,
+      height: 100.h,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      child: Icon(
+        Icons.image_not_supported,
+        size: 40,
+        color: Colors.grey[500],
+      ),
+    );
+  }
+
 }

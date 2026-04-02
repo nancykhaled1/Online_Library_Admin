@@ -64,7 +64,7 @@ class _AddNotificationBottomSheetState extends State<_AddNotificationBottomSheet
           showOverlayMessage(context, state.response.data!.message!, isError: false);
           context.read<NotificationScreenViewModel>().clearForm();
 
-          Navigator.of(context).pushReplacement(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) =>  NotificationScreen(),
             ),

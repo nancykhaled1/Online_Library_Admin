@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
@@ -12,10 +11,10 @@ import 'package:online_library_management/Models/Responses/BorrowedReturnedRespo
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
+import 'package:online_library_management/Models/Responses/DeleteReviewResponse.dart';
 import 'package:online_library_management/Models/Responses/ParentCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/ScanBorrowedResponse.dart';
 import 'package:online_library_management/Models/Responses/ScanReturnResponse.dart';
-
 import '../../Models/Requests/LoginRequest.dart';
 import '../../Models/Requests/UpdateBookRequest.dart';
 import '../../Models/Responses/AddNotificationResponse.dart';
@@ -96,7 +95,6 @@ class ApiManager{
       );
     }
   }
-
 
   Future<Either<LoginError, ParentCategoryResponse>> addParentCategory(ParentCategoryRequest request) async {
     final connectivityResult = await Connectivity().checkConnectivity();
@@ -1300,6 +1298,62 @@ class ApiManager{
             code: 0,
             message: "No Internet Connection",
             // details: "Please check your connection and try again.",
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<Either<LoginError, DeleteReviewResponse>> deleteReview(String reviewId) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      Uri url = Uri.https(ApiConstants.baseurl,"/api/admin/book-reviews/$reviewId");
+
+      final savedToken = await TokenStorage.getToken();
+
+      if (savedToken == null) {
+        print("⚠️ No auth token saved, user might not be logged in.");
+        return left(
+          LoginError(
+            success: false,
+            error: LoginDetailsError(
+              code: 401,
+              message: "Unauthorized: No token found, please login again.",
+            ),
+          ),
+        );
+      }
+
+      var response = await http.delete(
+        url,
+        headers: {
+          "Authorization": "Bearer $savedToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      var jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        /// هنا بعمل parse للـ object كله
+        var deleteReviewResponse = DeleteReviewResponse.fromJson(jsonResponse);
+
+        return right(deleteReviewResponse);
+      } else {
+        return left(LoginError.fromJson(jsonResponse));
+      }
+    } else {
+      return left(
+        LoginError(
+          success: false,
+          error: LoginDetailsError(
+            code: 0,
+            message: "No Internet Connection",
           ),
         ),
       );

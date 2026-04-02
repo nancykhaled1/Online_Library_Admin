@@ -6,6 +6,7 @@ import 'package:online_library_management/Models/Responses/BorrowedReturnedRespo
 import 'package:online_library_management/Models/Responses/DeleteBookResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteCategoryResponse.dart';
 import 'package:online_library_management/Models/Responses/DeleteNotificationResponse.dart';
+import 'package:online_library_management/Models/Responses/DeleteReviewResponse.dart';
 import 'package:online_library_management/Models/Responses/ScanReturnResponse.dart';
 
 import '../../Models/Responses/AddBookResponse.dart';
@@ -139,6 +140,12 @@ class GetReviewSuccessState extends States {
   GetReviewSuccessState({required this.review});
 }
 
+class DeleteReviewSuccessState extends States {
+  final DeleteReviewResponse response;
+
+  DeleteReviewSuccessState({required this.response});
+}
+
 class GetNotificationSuccessState extends States {
   final List<Notifications> notifications;
 
@@ -166,8 +173,12 @@ class AddNotificationSuccessState extends States {
 class GetBorrowBooksSuccessState extends States {
   final List<BorrowedBooks> borrow;
   final List<ReturnedBooks> returned;
+  final List<PendingBooks> pending;
+  final List<LateBooks> late;
 
-  GetBorrowBooksSuccessState({required this.borrow,required this.returned});
+
+
+  GetBorrowBooksSuccessState({required this.borrow,required this.returned,required this.pending,required this.late});
 }
 
 class ScanBorrowSuccessState extends States {
@@ -179,7 +190,10 @@ class ScanReturnSuccessState extends States {
   final Return returned;
   ScanReturnSuccessState({required this.returned});
 }
-
+class SummarySuccessState extends States {
+  final Summary summary;
+  SummarySuccessState({required this.summary});
+}
 
 // class SaveBookSuccessState extends States {
 //   final SaveBookResponse response;

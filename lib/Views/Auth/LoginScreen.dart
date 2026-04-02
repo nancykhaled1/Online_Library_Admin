@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:online_library_management/Views/DashBoard/DashBoardScreen.dart';
 import 'package:online_library_management/Views/Library/LibraryScreen.dart';
 import '../../Cubits/Auth/LoginScreenViewModel.dart';
 import '../../Cubits/States/States.dart';
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) =>  LibraryScreen(),
+              builder: (context) =>  DashBoardScreen(),
             ),
           );
 

@@ -158,8 +158,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       }
 
                       return ListView.builder(
-                        reverse: true,
-
                         itemCount: notifications.length,
                         itemBuilder: (context, index) {
                           final notif = notifications[index];
